@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense, useContext } from "react";
+import { Route, Switch } from "react-router-dom";
 import io from "socket.io-client";
+import { UserContext } from "./context/UserContext";
 
-function App() {
+const DashboardPage = lazy(() => import("./pages/dashboard"));
+const LandingPage = lazy(() => import("./pages/landing"));
+
+const App = () => {
+  const { profile, isLoading } = useContext(UserContext);
   const [socket, setSocket] = useState();
   useEffect(() => {
     const s = io("http://localhost:5000");
-    s.emit("send-uid", "prasoon-goswami");
     setSocket(s);
     return () => {
       s.disconnect();
@@ -13,10 +18,18 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <h1>Hi </h1>
-    </div>
+    <Suspense fallback={<h3>Loading...</h3>}>
+      {isLoading ? (
+        <h3>Loading...</h3>
+      ) : (
+        <Switch>
+          <Route path="/">
+            {profile ? <DashboardPage /> : <LandingPage />}
+          </Route>
+        </Switch>
+      )}
+    </Suspense>
   );
-}
+};
 
 export default App;
