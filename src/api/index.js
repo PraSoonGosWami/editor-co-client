@@ -1,4 +1,5 @@
 import axios from "axios";
+import { LOCAL_STORAGE_USER_DATA_KEY } from "../constants";
 
 const API = axios.create({
   baseURL: "http://localhost:5000/api/v1",
@@ -9,9 +10,9 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((req) => {
-  if (localStorage.getItem("userData")) {
+  if (localStorage.getItem(LOCAL_STORAGE_USER_DATA_KEY)) {
     req.headers.Authorization = `Bearer ${
-      JSON.parse(localStorage.getItem("userData")).token
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_DATA_KEY)).token
     }`;
   }
   return req;

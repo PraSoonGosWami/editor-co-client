@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useHistory } from "react-router";
 import GoogleLogin from "react-google-login";
 import { Typography } from "@material-ui/core";
 import { UserContext } from "../../context/UserContext";
@@ -6,7 +7,11 @@ import GoogleSigninButton from "../../components/buttons/google-sign-in";
 import classes from "./styles.module.css";
 
 const LandingPage = () => {
-  const { signinUser } = useContext(UserContext);
+  const { profile, signinUser } = useContext(UserContext);
+  const history = useHistory();
+  useEffect(() => {
+    profile && history.replace("/dashboard");
+  }, [profile]);
   const googleSuccess = (res) => {
     const { googleId, profileObj: profile, tokenId: token } = res;
     signinUser({ googleId, profile, token });
@@ -26,7 +31,7 @@ const LandingPage = () => {
         onSuccess={googleSuccess}
         onFailure={googleFailure}
         cookiePolicy={"single_host_origin"}
-        isSignedIn={false}
+        isSignedIn={true}
         render={(renderProps) => (
           <GoogleSigninButton clickHandler={renderProps.onClick}>
             Continue with Google

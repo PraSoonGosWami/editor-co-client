@@ -1,11 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
+import { useGoogleLogout } from "react-google-login";
 import { signinWithGoogle } from "../api";
 import { LOCAL_STORAGE_USER_DATA_KEY } from "../constants";
 
 export const UserContext = createContext({
   profile: {},
   setProfile() {},
-  isLoading: true,
+  isLoading: false,
   setIsLoading() {},
   signinUser() {},
   logoutUser() {},
@@ -13,22 +14,27 @@ export const UserContext = createContext({
 
 export const UserContextProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const userData = localStorage.getItem(LOCAL_STORAGE_USER_DATA_KEY);
-    userData && setProfile(userData.profile);
-    setIsLoading(false);
-  }, []);
+  const { signOut } = useGoogleLogout({
+    clientId:
+      "32272026461-hpch5mbll357l8ksb5bvfi2v85p0togg.apps.googleusercontent.com",
+    onLogoutSuccess: () => {
+      setProfile(null);
+      localStorage.removeItem(LOCAL_STORAGE_USER_DATA_KEY);
+    },
+    onFailure: (err) => {
+      console.log(err);
+    },
+  });
 
   const signinUser = async (userData) => {
     try {
       setIsLoading(true);
-      const res = await signinWithGoogle(userData);
-      console.log(res);
+      const data = await signinWithGoogle(userData);
       localStorage.setItem(
         LOCAL_STORAGE_USER_DATA_KEY,
-        JSON.stringify({ ...userData })
+        JSON.stringify({ token: userData.token })
       );
       setProfile(userData.profile);
     } catch (err) {
@@ -39,7 +45,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const logoutUser = () => {
-    localStorage.removeItem(LOCAL_STORAGE_USER_DATA_KEY);
+    signOut();
   };
 
   const contextValue = {
