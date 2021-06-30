@@ -19,4 +19,5 @@ API.interceptors.request.use((req) => {
 });
 
 export const signinWithGoogle = (userData) => API.post("/auth", userData);
-export const createNewDocument = () => API.get("");
+export const createNewDocument = (data) => API.post("/doc/create", data);
+export const getAllDocuments = () => API.get("/doc/get/user");

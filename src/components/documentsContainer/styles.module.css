@@ -1,0 +1,15 @@
+.docContainer {
+  padding: 14px 0;
+  overflow-x: hidden;
+}
+
+.cardsCotainer {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 1fr)
+  ); /* see notes below */
+  flex-wrap: wrap;
+  grid-gap: 24px;
+  margin: 12px 0;
+}

@@ -6,7 +6,7 @@ import { LOCAL_STORAGE_USER_DATA_KEY } from "../constants";
 export const UserContext = createContext({
   profile: {},
   setProfile() {},
-  isLoading: false,
+  isLoading: Boolean(),
   setIsLoading() {},
   signinUser() {},
   logoutUser() {},
@@ -29,8 +29,8 @@ export const UserContextProvider = ({ children }) => {
   });
 
   const signinUser = async (userData) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const data = await signinWithGoogle(userData);
       localStorage.setItem(
         LOCAL_STORAGE_USER_DATA_KEY,
@@ -40,7 +40,9 @@ export const UserContextProvider = ({ children }) => {
     } catch (err) {
       console.log(err);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 

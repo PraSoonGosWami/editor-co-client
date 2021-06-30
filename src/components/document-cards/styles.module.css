@@ -1,0 +1,38 @@
+.documentCard {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+}
+
+.documentCard > h6 {
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 18px;
+}
+.documentCard > header {
+  margin: 12px 0 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.documentCard > header > img {
+  height: 120px;
+  object-fit: scale-down;
+  text-align: center;
+}
+.documentCardInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.documentCardInfo > p {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+}

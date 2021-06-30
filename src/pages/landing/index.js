@@ -1,17 +1,17 @@
 import { useContext, useEffect } from "react";
-import { useHistory } from "react-router";
 import GoogleLogin from "react-google-login";
 import { Typography } from "@material-ui/core";
 import { UserContext } from "../../context/UserContext";
 import GoogleSigninButton from "../../components/buttons/google-sign-in";
 import classes from "./styles.module.css";
 
-const LandingPage = () => {
+const LandingPage = ({ history, location }) => {
   const { profile, signinUser } = useContext(UserContext);
-  const history = useHistory();
+
   useEffect(() => {
-    profile && history.replace("/dashboard");
+    profile && history.replace(location?.state?.from?.pathname || "/dashboard");
   }, [profile]);
+
   const googleSuccess = (res) => {
     const { googleId, profileObj: profile, tokenId: token } = res;
     signinUser({ googleId, profile, token });
@@ -19,6 +19,7 @@ const LandingPage = () => {
   const googleFailure = (err) => {
     console.log(err);
   };
+
   return (
     <div className={classes.landing}>
       <section className={classes.landingIntro}>
