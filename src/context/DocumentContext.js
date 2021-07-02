@@ -9,6 +9,7 @@ export const DocumentContext = createContext({
   setDocLoading() {},
   frameElement() {},
   createDocument() {},
+  fetchCurrentDocumet() {},
 });
 
 export const DocumentContextProvider = ({ children }) => {
@@ -55,6 +56,7 @@ export const DocumentContextProvider = ({ children }) => {
     setDocLoading,
     fetchAllDocuments,
     createDocument,
+    fetchCurrentDocumet,
   };
   return (
     <DocumentContext.Provider value={contextValue}>
