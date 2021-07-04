@@ -21,7 +21,7 @@ import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import { UserContext } from "../../context/UserContext";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
-const NavBar = ({ title, showBackButton }) => {
+const NavBar = ({ title, showBackButton, showDocOptions }) => {
   const useStyles = makeStyles((theme) => TopBarStyle(theme, showBackButton));
   const [anchorEl, setAnchorEl] = useState(null);
   const classes = useStyles();
@@ -61,15 +61,22 @@ const NavBar = ({ title, showBackButton }) => {
           {title && (
             <Typography className={classes.subTitle}>{title}</Typography>
           )}
-          <Tooltip title={profile?.name ?? ""}>
-            <Avatar
-              onClick={handleMenuClick}
-              src={profile?.imageUrl}
-              style={{ cursor: "pointer", width: "35px", height: "35px" }}
-            >
-              {profile?.givenName.substring(0, 1)}
-            </Avatar>
-          </Tooltip>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {showDocOptions && (
+              <IconButton>
+                <SettingsIcon fontSize="medium" />
+              </IconButton>
+            )}
+            <Tooltip title={profile?.name ?? ""}>
+              <Avatar
+                onClick={handleMenuClick}
+                src={profile?.imageUrl}
+                style={{ cursor: "pointer", width: "35px", height: "35px" }}
+              >
+                {profile?.givenName.substring(0, 1)}
+              </Avatar>
+            </Tooltip>
+          </div>
         </Toolbar>
       </AppBar>
 

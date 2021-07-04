@@ -13,7 +13,7 @@ const DocumentCard = ({
 }) => {
   const history = useHistory();
   const onClick = () => {
-    history.push(`/doc/${_id}`);
+    history.push(`/doc/${_id}`, { title: name });
   };
   return (
     <div className={classes.documentCard} onClick={onClick}>
