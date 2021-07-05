@@ -95,12 +95,21 @@ const Editor = ({ docId, data, role }) => {
     role === USER_ROLE_EDITOR_OWNERR ? quill.enable() : quill.disable();
   }, [quill]);
 
+  //join the room
+  useEffect(() => {
+    if (!socket || !quill) return;
+    socket.emit("join-room", { docId, userId: profile.googleId });
+  }, [socket, quill]);
+
   //save changes every 2 seconds
   useEffect(() => {
     if (socket == null || quill == null) return;
 
     const interval = setInterval(() => {
-      socket.emit("save-document", quill.getContents());
+      socket.emit("save-document", {
+        data: quill.getContents(),
+        userId: profile.googleId,
+      });
     }, 2000);
 
     return () => {
@@ -111,6 +120,7 @@ const Editor = ({ docId, data, role }) => {
   //updates changes
   useEffect(() => {
     if (!socket || !quill) return;
+
     const handler = (delta, oldData, source) => {
       if (
         source !== "user" ||
@@ -121,17 +131,12 @@ const Editor = ({ docId, data, role }) => {
       socket.emit("send-changes", delta);
     };
     const cursorHandler = (range, oldRange, source) => {
-      if (
-        source !== "user" ||
-        role === USER_ROLE_VIEWER ||
-        role === USER_ROLE_UNDEFINDED
-      )
-        return;
+      if (role === USER_ROLE_VIEWER || role === USER_ROLE_UNDEFINDED) return;
       socket.emit("update-cursor", {
-        userId: profile?._id,
+        userId: profile?.googleId,
         userName: profile?.name,
         range,
-        color: "pink",
+        color: "red",
       });
     };
     quill.on("text-change", handler);
@@ -146,6 +151,7 @@ const Editor = ({ docId, data, role }) => {
   //fetches changes
   useEffect(() => {
     if (!socket || !quill) return;
+
     const handler = (delta) => {
       quill.updateContents(delta);
     };
@@ -167,7 +173,7 @@ const Editor = ({ docId, data, role }) => {
       socket.off("receive-changes", handler);
       socket.off("receive-cursor", cursorHandler);
       socket.emit("update-cursor", {
-        userId: "uid",
+        userId: profile.googleId,
         range: null,
       });
     };

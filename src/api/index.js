@@ -21,4 +21,5 @@ API.interceptors.request.use((req) => {
 export const signinWithGoogle = (userData) => API.post("/auth", userData);
 export const createNewDocument = (data) => API.post("/doc/create", data);
 export const getAllDocuments = () => API.get("/doc/get/user");
+export const getAllSharedDocuments = () => API.get("/doc/get/shared");
 export const getDocumentsById = (docId) => API.post("/doc/get/byId", docId);

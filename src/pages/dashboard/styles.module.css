@@ -1,3 +1,10 @@
 .dashboard {
   margin: 24px auto;
+  position: relative;
+  padding-bottom: 52px;
+}
+.addFab {
+  position: fixed !important;
+  bottom: 32px;
+  right: 32px;
 }

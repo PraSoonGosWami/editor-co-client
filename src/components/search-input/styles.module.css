@@ -1,0 +1,18 @@
+.search {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 350px;
+  padding: 4px 12px;
+  background-color: #f9f9f9;
+}
+
+.searchIcon {
+  margin-right: 16px;
+}
+
+.search:hover {
+  background-color: #eee;
+}

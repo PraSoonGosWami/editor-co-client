@@ -14,10 +14,12 @@ import {
   ListItemIcon,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import AppsIcon from "@material-ui/icons/Apps";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ProfileIcon from "@material-ui/icons/Person";
 import SettingsIcon from "@material-ui/icons/Settings";
 import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
+import PrintIcon from "@material-ui/icons/Print";
 import { UserContext } from "../../context/UserContext";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
@@ -39,6 +41,10 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handlePrintButtonClick = () => {
+    window.print();
   };
 
   return (
@@ -63,15 +69,27 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
           )}
           <div style={{ display: "flex", alignItems: "center" }}>
             {showDocOptions && (
-              <IconButton>
-                <SettingsIcon fontSize="medium" />
-              </IconButton>
+              <>
+                <IconButton color="primary" onClick={handlePrintButtonClick}>
+                  <PrintIcon />
+                </IconButton>
+                <Tooltip title="Document options">
+                  <IconButton color="primary">
+                    <AppsIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
             <Tooltip title={profile?.name ?? ""}>
               <Avatar
                 onClick={handleMenuClick}
                 src={profile?.imageUrl}
-                style={{ cursor: "pointer", width: "35px", height: "35px" }}
+                style={{
+                  cursor: "pointer",
+                  width: "35px",
+                  height: "35px",
+                  marginLeft: "12px",
+                }}
               >
                 {profile?.givenName.substring(0, 1)}
               </Avatar>

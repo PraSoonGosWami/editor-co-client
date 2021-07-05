@@ -1,6 +1,6 @@
 .editor .ql-editor {
   width: 8.3in;
-  min-height: 11.5in;
+  min-height: 11.7in;
   padding: 1in;
   margin: 1rem;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
@@ -46,9 +46,12 @@
   .nav-bar-app {
     display: none;
   }
+  #text-editor-main {
+    background: none;
+    min-width: auto;
+    min-height: auto;
+  }
   .editor .ql-editor {
-    width: 6.3in;
-    min-height: 9.5in;
     padding: 0;
     margin: 0;
     box-shadow: none;
@@ -62,5 +65,4 @@
 
 @page {
   margin: 1in;
-  size: A4;
 }

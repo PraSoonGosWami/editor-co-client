@@ -10,10 +10,11 @@ const DocumentCard = ({
   private: isPrivate,
   createdOn,
   lastEdited,
+  accessText,
 }) => {
   const history = useHistory();
   const onClick = () => {
-    history.push(`/doc/${_id}`, { title: name });
+    history.push(`/doc/${_id}`);
   };
   return (
     <div className={classes.documentCard} onClick={onClick}>
@@ -41,6 +42,9 @@ const DocumentCard = ({
           </Tooltip>
         )}
       </section>
+      {accessText && (
+        <Typography className={classes.accessText}>{accessText}</Typography>
+      )}
     </div>
   );
 };

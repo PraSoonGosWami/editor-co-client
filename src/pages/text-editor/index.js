@@ -10,10 +10,11 @@ import {
 import { getDocumentsById } from "../../api";
 import classes from "./styles.module.css";
 
-const TextEditor = ({ history, location }) => {
+const TextEditor = () => {
   const [role, setRole] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const [data, setData] = useState(null);
+  const [title, setTitle] = useState("Untitled document");
   const { id: docId } = useParams();
 
   const identifyRole = () => {};
@@ -22,9 +23,11 @@ const TextEditor = ({ history, location }) => {
   useEffect(() => {
     if (!docId) return;
     setIsFetching(true);
+
     getDocumentsById({ docId })
       .then((res) => {
         setData(res?.data?.doc?.data);
+        setTitle(res?.data?.doc?.name);
         const roleData = res?.data?.role;
         if (!roleData) setRole(USER_ROLE_UNDEFINDED);
         if (roleData === "editor" || roleData === "owner")
@@ -43,11 +46,8 @@ const TextEditor = ({ history, location }) => {
   }, [docId]);
 
   return (
-    <div className={classes.textEditor}>
-      <NavBar
-        title={location?.state?.title || "Untitled document"}
-        showBackButton
-      />
+    <div className={classes.textEditor} id="text-editor-main">
+      <NavBar title={title} showBackButton showDocOptions />
       {!isFetching && role && <Editor docId={docId} data={data} role={role} />}
     </div>
   );
