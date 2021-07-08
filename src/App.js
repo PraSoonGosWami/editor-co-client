@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { UserContext } from "./context/UserContext";
 import PrivateRoute from "./utils/private-routes";
+import { DocContextProvider } from "./context/DocumentContext";
 
 const DashboardPage = lazy(() => import("./pages/dashboard"));
 const LandingPage = lazy(() => import("./pages/landing"));
@@ -36,11 +37,16 @@ const App = () => {
               exact
               component={DashboardPage}
             />
+
             <PrivateRoute
               auth={Boolean(profile)}
               path="/doc/:id"
               exact
-              component={TextEditor}
+              component={() => (
+                <DocContextProvider>
+                  <TextEditor />
+                </DocContextProvider>
+              )}
             />
           </Switch>
         )}

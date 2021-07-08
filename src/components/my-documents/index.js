@@ -4,7 +4,7 @@ import SearchInput from "../search-input";
 import { getAllDocuments } from "../../api";
 import classes from "./styles.module.css";
 
-const MyDocuments = () => {
+const MyDocuments = ({ value, index }) => {
   const [documents, setDocuments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +23,11 @@ const MyDocuments = () => {
   }, []);
 
   return (
-    <div className={classes.myDocuments}>
+    <div
+      className={classes.myDocuments}
+      role="tabpanel"
+      hidden={value !== index}
+    >
       <div className={classes.docQuery}>
         <SearchInput />
         <section></section>

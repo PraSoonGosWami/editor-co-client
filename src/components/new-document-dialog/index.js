@@ -1,15 +1,9 @@
 import { useState } from "react";
 import { useHistory } from "react-router";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from "@material-ui/core";
+import { TextField, Typography } from "@material-ui/core";
 import CustomCheckbox from "../custom-checkbox";
 import { createNewDocument } from "../../api";
+import CustomDialog from "../custom-dialog";
 
 const NewDocumentDialog = ({ showDialog, handleClose }) => {
   const [isPrivate, setIsPrivate] = useState(false);
@@ -43,31 +37,32 @@ const NewDocumentDialog = ({ showDialog, handleClose }) => {
       });
   };
   return (
-    <Dialog open={showDialog} onClose={handleClose}>
-      <DialogTitle>Create new document</DialogTitle>
-      <DialogContent>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Document title"
-          type="text"
-          error={error}
-          helperText={error && "Name can't be empty"}
-          fullWidth
-          value={docName}
-          onChange={textChangeHandler}
-        />
-        <CustomCheckbox label="Private" onChange={switchHandler} />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary" disabled={posting}>
-          Cancel
-        </Button>
-        <Button onClick={addNewDocument} color="primary" disabled={posting}>
-          {posting ? "Please wait.." : "Create"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <CustomDialog
+      open={showDialog}
+      onClose={handleClose}
+      title="Create new document"
+      primaryCTA={addNewDocument}
+      primaryText={posting ? "Please wait.." : "Create"}
+      disabled={posting}
+    >
+      <TextField
+        autoFocus
+        margin="dense"
+        label="Document title"
+        type="text"
+        error={error}
+        helperText={error && "Name can't be empty"}
+        fullWidth
+        value={docName}
+        onChange={textChangeHandler}
+      />
+      <CustomCheckbox label="Private" onChange={switchHandler} />
+      <Typography style={{ fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>
+        {isPrivate
+          ? "(Only the users with whom you share this document can view or edit)"
+          : "(Any one with the URL can view this document)"}
+      </Typography>
+    </CustomDialog>
   );
 };
 

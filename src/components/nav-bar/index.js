@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { lazy, Suspense, useState, useContext } from "react";
 import { useHistory } from "react-router";
 import {
   Avatar,
@@ -6,41 +6,45 @@ import {
   Typography,
   Toolbar,
   AppBar,
-  Menu,
-  MenuItem,
   IconButton,
-  Divider,
-  Box,
-  ListItemIcon,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AppsIcon from "@material-ui/icons/Apps";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ProfileIcon from "@material-ui/icons/Person";
-import SettingsIcon from "@material-ui/icons/Settings";
-import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 import PrintIcon from "@material-ui/icons/Print";
 import { UserContext } from "../../context/UserContext";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
+const DocMenu = lazy(() => import("../menu/doc-menu"));
+const UserMenu = lazy(() => import("../menu/user-menu"));
+
 const NavBar = ({ title, showBackButton, showDocOptions }) => {
   const useStyles = makeStyles((theme) => TopBarStyle(theme, showBackButton));
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [userAnchor, setUserAnchor] = useState(null);
+  const [docAnchor, setDocAnchor] = useState(null);
   const classes = useStyles();
   const { profile, logoutUser } = useContext(UserContext);
 
   const history = useHistory();
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const oepnUserMenu = (event) => {
+    setUserAnchor(event.currentTarget);
+  };
+
+  const closeUserMenu = () => {
+    setUserAnchor(null);
+  };
+
+  const openDocMenu = (event) => {
+    setDocAnchor(event.currentTarget);
+  };
+
+  const closeDocMenu = () => {
+    setDocAnchor(null);
   };
 
   const onBackClick = () => {
     history.push("/dashboard");
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
   };
 
   const handlePrintButtonClick = () => {
@@ -74,7 +78,7 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
                   <PrintIcon />
                 </IconButton>
                 <Tooltip title="Document options">
-                  <IconButton color="primary">
+                  <IconButton color="primary" onClick={openDocMenu}>
                     <AppsIcon />
                   </IconButton>
                 </Tooltip>
@@ -82,7 +86,7 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
             )}
             <Tooltip title={profile?.name ?? ""}>
               <Avatar
-                onClick={handleMenuClick}
+                onClick={oepnUserMenu}
                 src={profile?.imageUrl}
                 style={{
                   cursor: "pointer",
@@ -98,44 +102,20 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
         </Toolbar>
       </AppBar>
 
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <div
-          style={{ display: "flex", alignItems: "center", padding: "8px 14px" }}
-        >
-          <Avatar
-            src={profile?.imageUrl}
-            style={{ cursor: "pointer", width: "35px", height: "35px" }}
-          >
-            {profile?.givenName.substring(0, 1)}
-          </Avatar>
-          <Box width={12} />
-          <Typography>{profile?.name}</Typography>
-        </div>
-        <Divider />
-        <MenuItem onClick={handleMenuClose}>
-          <ListItemIcon>
-            <ProfileIcon />
-          </ListItemIcon>
-          Profile
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose}>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={logoutUser}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
+      <Suspense fallback={""}>
+        {userAnchor && (
+          <UserMenu
+            profile={profile}
+            userAnchor={userAnchor}
+            closeUserMenu={closeUserMenu}
+            logoutUser={logoutUser}
+            history={history}
+          />
+        )}
+        {docAnchor && (
+          <DocMenu docAnchor={docAnchor} closeDocMenu={closeDocMenu} />
+        )}
+      </Suspense>
     </div>
   );
 };

@@ -39,11 +39,15 @@ const DashboardPage = ({ history, location }) => {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="My documents" />
-          <Tab label="Shared with me" />
+          <Tab label="My documents" value={0} />
+          <Tab label="Shared with me" value={1} />
         </Tabs>
-        <Suspense fallback={<h3>Loading</h3>}>
-          {!value ? <MyDocuments /> : <SharedDocuments />}
+        <Suspense fallback={""}>
+          {!value ? (
+            <MyDocuments value={value} index={0} />
+          ) : (
+            <SharedDocuments value={value} index={1} />
+          )}
           {showDialog && (
             <NewDocumentDialog
               showDialog={showDialog}
