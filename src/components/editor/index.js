@@ -93,7 +93,7 @@ const Editor = ({ docId, data, role }) => {
     if (!quill || data === null) return;
     quill.setContents(data);
     role === USER_ROLE_EDITOR_OWNERR ? quill.enable() : quill.disable();
-  }, [quill]);
+  }, [quill, data, role]);
 
   //join the room
   useEffect(() => {

@@ -44,6 +44,7 @@ const NewDocumentDialog = ({ showDialog, handleClose }) => {
       primaryCTA={addNewDocument}
       primaryText={posting ? "Please wait.." : "Create"}
       disabled={posting}
+      secondaryDisabled={posting}
     >
       <TextField
         autoFocus

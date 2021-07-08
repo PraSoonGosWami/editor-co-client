@@ -11,8 +11,9 @@ const NewDocumentDialog = lazy(() =>
 );
 
 const DashboardPage = ({ history, location }) => {
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     query.get("tab-index") === "1" ? setValue(1) : setValue(0);

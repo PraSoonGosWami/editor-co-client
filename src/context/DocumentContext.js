@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import { getDocumentsById, removeDocumentsById } from "../api";
+import { createContext, useState } from "react";
+import { getDocumentById, removeDocumentById } from "../api";
 import {
   USER_ROLE_EDITOR_OWNERR,
   USER_ROLE_UNDEFINDED,
@@ -10,31 +10,31 @@ export const DocContext = createContext({
   setRole() {},
   isFetching: Boolean,
   setIsFetching() {},
-  data: Object,
-  setData() {},
+  doc: Object,
+  setDoc() {},
   title: String,
   setTitle() {},
   error: Object,
   setError() {},
-  fetchDocById() {},
-  updateDocInfo() {},
-  deleteDocById() {},
-  manageDocSharing() {},
+  fetchDocById(docId) {},
+  updateDocInfo(docId, updatedData) {},
+  deleteDocById(docId) {},
+  manageDocSharing(docId, users) {},
 });
 
 export const DocContextProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const [data, setData] = useState(null);
+  const [doc, setDoc] = useState(null);
   const [title, setTitle] = useState("Loading...");
   const [error, setError] = useState({ have: false, message: "" });
 
   const fetchDocById = (docId) => {
     if (!docId) return;
     setIsFetching(true);
-    getDocumentsById({ docId })
+    getDocumentById({ docId })
       .then((res) => {
-        setData(res?.data?.doc?.data);
+        setDoc(res?.data?.doc);
         setTitle(res?.data?.doc?.name);
         const roleData = res?.data?.role;
         if (!roleData) setRole(USER_ROLE_UNDEFINDED);
@@ -59,7 +59,10 @@ export const DocContextProvider = ({ children }) => {
 
   const updateDocInfo = (docId, updatedData) => {};
 
-  const deleteDocById = (docId) => {};
+  const deleteDocById = async (docId) => {
+    if (!docId) return;
+    return await removeDocumentById({ docId });
+  };
 
   const manageDocSharing = (docId, users) => {};
 
@@ -68,8 +71,8 @@ export const DocContextProvider = ({ children }) => {
     setRole,
     isFetching,
     setIsFetching,
-    data,
-    setData,
+    doc,
+    setDoc,
     title,
     setTitle,
     error,

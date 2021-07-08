@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Typography } from "@material-ui/core";
 import DocumentCard from "../document-cards";
 import SearchInput from "../search-input";
 import { getAllSharedDocuments } from "../../api";
@@ -29,10 +28,12 @@ const MyDocuments = ({ value, index }) => {
       role="tabpanel"
       hidden={value !== index}
     >
-      <div className={classes.docQuery}>
-        <SearchInput />
-        <section></section>
-      </div>
+      {!isLoading && (
+        <div className={classes.docQuery}>
+          <SearchInput />
+          <section></section>
+        </div>
+      )}
 
       <div className={classes.myDocumentsContainer}>
         {!isLoading &&

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useParams } from "react-router";
 import { Typography } from "@material-ui/core";
 import Editor from "../../components/editor";
@@ -9,7 +9,7 @@ import classes from "./styles.module.css";
 
 const TextEditor = () => {
   const { id: docId } = useParams();
-  const { role, isFetching, data, title, error, fetchDocById } =
+  const { role, isFetching, doc, title, error, fetchDocById } =
     useContext(DocContext);
 
   //fetching the document for the first time
@@ -20,7 +20,9 @@ const TextEditor = () => {
   return (
     <div className={classes.textEditor} id="text-editor-main">
       <NavBar title={title} showBackButton showDocOptions />
-      {!isFetching && role && <Editor docId={docId} data={data} role={role} />}
+      {!isFetching && role && (
+        <Editor docId={docId} data={doc?.data} role={role} />
+      )}
       {error.have && (
         <div>
           <Typography>{error.message}</Typography>

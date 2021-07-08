@@ -13,6 +13,7 @@ const CustomDialog = ({
   primaryCTA,
   primaryText,
   disabled,
+  secondaryDisabled,
   children,
 }) => {
   return (
@@ -20,7 +21,7 @@ const CustomDialog = ({
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary" disabled={disabled}>
+        <Button onClick={onClose} color="primary" disabled={secondaryDisabled}>
           Cancel
         </Button>
         <Button onClick={primaryCTA} color="primary" disabled={disabled}>

@@ -10,7 +10,7 @@ const LandingPage = ({ history, location }) => {
 
   useEffect(() => {
     profile && history.replace(location?.state?.from?.pathname || "/dashboard");
-  }, [profile]);
+  }, [profile, history, location]);
 
   const googleSuccess = (res) => {
     const { googleId, profileObj: profile, tokenId: token } = res;
