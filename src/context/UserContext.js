@@ -33,7 +33,6 @@ export const UserContextProvider = ({ children }) => {
     setIsLoading(true);
     try {
       await signinWithGoogle(userData);
-      console.log(userData.token);
       localStorage.setItem(
         LOCAL_STORAGE_USER_DATA_KEY,
         JSON.stringify({ token: userData.token })

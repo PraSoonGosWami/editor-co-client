@@ -8,6 +8,9 @@ import classes from "./styles.module.css";
 
 const DeleteAlert = lazy(() => import("../../components/delete-alert"));
 const EditNameDialog = lazy(() => import("../../components/edit-name-dialog"));
+const UpdareShareDialog = lazy(() =>
+  import("../../components/update-share-dialog")
+);
 
 const TextEditor = () => {
   const { id: docId } = useParams();
@@ -15,6 +18,7 @@ const TextEditor = () => {
     useContext(DocContext);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   //fetching the document for the first time
   useEffect(() => {
@@ -29,6 +33,10 @@ const TextEditor = () => {
     setShowDeleteAlert((prevState) => !prevState);
   };
 
+  const toggleShareHandler = () => {
+    setShowShareDialog((prevState) => !prevState);
+  };
+
   return (
     <div className={classes.textEditor} id="text-editor-main">
       <NavBar
@@ -37,6 +45,7 @@ const TextEditor = () => {
         showDocOptions
         editName={toggleEditNameHandler}
         deleteHandler={toggleDeleteHandler}
+        shareHandler={toggleShareHandler}
       />
       {!isFetching && role && (
         <Editor docId={docId} data={doc?.data} role={role} />
@@ -46,6 +55,7 @@ const TextEditor = () => {
           <Typography>{error.message}</Typography>
         </div>
       )}
+
       <Suspense fallback="">
         {showDeleteAlert && (
           <DeleteAlert open={showDeleteAlert} onClose={toggleDeleteHandler} />
@@ -54,6 +64,12 @@ const TextEditor = () => {
           <EditNameDialog
             open={showNameDialog}
             onClose={toggleEditNameHandler}
+          />
+        )}
+        {showShareDialog && (
+          <UpdareShareDialog
+            open={showShareDialog}
+            onClose={toggleShareHandler}
           />
         )}
       </Suspense>

@@ -5,7 +5,8 @@ import ImageResize from "quill-image-resize-module-react";
 import { io } from "socket.io-client";
 import { UserContext } from "../../context/UserContext";
 import {
-  USER_ROLE_EDITOR_OWNERR,
+  USER_ROLE_EDITOR,
+  USER_ROLE_OWNER,
   USER_ROLE_VIEWER,
   USER_ROLE_UNDEFINDED,
 } from "../../constants";
@@ -92,7 +93,9 @@ const Editor = ({ docId, data, role }) => {
   useEffect(() => {
     if (!quill || data === null) return;
     quill.setContents(data);
-    role === USER_ROLE_EDITOR_OWNERR ? quill.enable() : quill.disable();
+    role === USER_ROLE_EDITOR || role === USER_ROLE_OWNER
+      ? quill.enable()
+      : quill.disable();
   }, [quill, data, role]);
 
   //join the room

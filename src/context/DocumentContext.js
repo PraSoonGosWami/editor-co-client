@@ -3,9 +3,11 @@ import {
   getDocumentById,
   removeDocumentById,
   updateDocumentById,
+  updateSharingSettingsById,
 } from "../api";
 import {
-  USER_ROLE_EDITOR_OWNERR,
+  USER_ROLE_EDITOR,
+  USER_ROLE_OWNER,
   USER_ROLE_UNDEFINDED,
   USER_ROLE_VIEWER,
 } from "../constants";
@@ -23,7 +25,7 @@ export const DocContext = createContext({
   fetchDocById(docId) {},
   updateDocInfo(docId, name) {},
   deleteDocById(docId) {},
-  manageDocSharing(docId, users) {},
+  manageDocSharing(docId, editors, viewers, isPrivate) {},
 });
 
 export const DocContextProvider = ({ children }) => {
@@ -42,8 +44,8 @@ export const DocContextProvider = ({ children }) => {
         setTitle(res?.data?.doc?.name);
         const roleData = res?.data?.role;
         if (!roleData) setRole(USER_ROLE_UNDEFINDED);
-        if (roleData === "editor" || roleData === "owner")
-          setRole(USER_ROLE_EDITOR_OWNERR);
+        if (roleData === "owner") setRole(USER_ROLE_OWNER);
+        if (roleData === "editor") setRole(USER_ROLE_EDITOR);
         if (roleData === "viewer") setRole(USER_ROLE_VIEWER);
       })
       .catch((err) => {
@@ -71,7 +73,13 @@ export const DocContextProvider = ({ children }) => {
     return await removeDocumentById({ docId });
   };
 
-  const manageDocSharing = (docId, users) => {};
+  const manageDocSharing = async (docId, editors, viewers, isPrivate) => {
+    if (!docId || !editors || !viewers || isPrivate === null) return;
+    return await updateSharingSettingsById({
+      docId,
+      shared: { private: isPrivate, editors, viewers },
+    });
+  };
 
   const contextValue = {
     role,

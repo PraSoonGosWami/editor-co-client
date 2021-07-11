@@ -26,3 +26,5 @@ export const getDocumentById = (docId) => API.post("/doc/get/byId", docId);
 export const removeDocumentById = (docId) =>
   API.post("/doc/delete/byId", docId);
 export const updateDocumentById = (data) => API.post("/doc/update/byId", data);
+export const updateSharingSettingsById = (data) =>
+  API.post("/doc/sharing/byId", data);
