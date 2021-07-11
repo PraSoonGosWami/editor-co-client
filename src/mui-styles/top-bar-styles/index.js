@@ -29,18 +29,24 @@ const TopBarStyle = (theme, showBackButton) => {
       },
     },
     subTitle: {
-      flexGrow: 1,
       textTransform: "capitalize",
-      fontSize: 17,
+      fontSize: 18,
       fontWeight: "bolder",
       textOverflow: "ellipsis",
       overflow: "hidden",
       whiteSpace: "nowrap",
+      maxWidth: 320,
       [theme.breakpoints.down("sm")]: {
-        fontSize: 16,
+        fontSize: 17,
         marginRight: 20,
         marginLeft: 20,
       },
+    },
+    avatar: {
+      cursor: "pointer",
+      width: "35px",
+      height: "35px",
+      marginLeft: "12px",
     },
   };
 };

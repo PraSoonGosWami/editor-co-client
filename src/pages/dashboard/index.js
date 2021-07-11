@@ -50,10 +50,7 @@ const DashboardPage = ({ history, location }) => {
             <SharedDocuments value={value} index={1} />
           )}
           {showDialog && (
-            <NewDocumentDialog
-              showDialog={showDialog}
-              handleClose={closeDialog}
-            />
+            <NewDocumentDialog open={showDialog} onClose={closeDialog} />
           )}
         </Suspense>
         <Fab color="primary" className={classes.addFab} onClick={openDialog}>

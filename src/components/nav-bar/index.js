@@ -7,40 +7,39 @@ import {
   Toolbar,
   AppBar,
   IconButton,
+  Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import AppsIcon from "@material-ui/icons/Apps";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import PrintIcon from "@material-ui/icons/Print";
 import { UserContext } from "../../context/UserContext";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
-const DocMenu = lazy(() => import("../menu/doc-menu"));
 const UserMenu = lazy(() => import("../menu/user-menu"));
 
-const NavBar = ({ title, showBackButton, showDocOptions }) => {
+const NavBar = ({
+  title,
+  showBackButton,
+  showDocOptions,
+  editName,
+  deleteHandler,
+  shareHandler,
+}) => {
   const useStyles = makeStyles((theme) => TopBarStyle(theme, showBackButton));
   const [userAnchor, setUserAnchor] = useState(null);
-  const [docAnchor, setDocAnchor] = useState(null);
   const classes = useStyles();
   const { profile, logoutUser } = useContext(UserContext);
-
   const history = useHistory();
 
-  const oepnUserMenu = (event) => {
+  const openUserMenu = (event) => {
     setUserAnchor(event.currentTarget);
   };
 
   const closeUserMenu = () => {
     setUserAnchor(null);
-  };
-
-  const openDocMenu = (event) => {
-    setDocAnchor(event.currentTarget);
-  };
-
-  const closeDocMenu = () => {
-    setDocAnchor(null);
   };
 
   const onBackClick = () => {
@@ -66,34 +65,48 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
                 <ArrowBackIcon fontSize="large" />
               </IconButton>
             )}
-            <Typography className={classes.title}>Editor-co</Typography>
+            {title ? (
+              <Typography className={classes.subTitle} onClick={editName}>
+                {title}
+              </Typography>
+            ) : (
+              <Typography className={classes.title}>Editor-co</Typography>
+            )}
           </div>
-          {title && (
-            <Typography className={classes.subTitle}>{title}</Typography>
-          )}
+
           <div style={{ display: "flex", alignItems: "center" }}>
             {showDocOptions && (
               <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  startIcon={<PeopleAltIcon />}
+                  onClick={shareHandler}
+                  style={{ marginRight: 8 }}
+                >
+                  Share
+                </Button>
+                <Tooltip title="Edit name">
+                  <IconButton onClick={editName} color="primary">
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
                 <IconButton color="primary" onClick={handlePrintButtonClick}>
                   <PrintIcon />
                 </IconButton>
-                <Tooltip title="Document options">
-                  <IconButton color="primary" onClick={openDocMenu}>
-                    <AppsIcon />
+                <Tooltip title="Delete document">
+                  <IconButton color="primary" onClick={deleteHandler}>
+                    <DeleteIcon />
                   </IconButton>
                 </Tooltip>
               </>
             )}
             <Tooltip title={profile?.name ?? ""}>
               <Avatar
-                onClick={oepnUserMenu}
+                onClick={openUserMenu}
                 src={profile?.imageUrl}
-                style={{
-                  cursor: "pointer",
-                  width: "35px",
-                  height: "35px",
-                  marginLeft: "12px",
-                }}
+                className={classes.avatar}
               >
                 {profile?.givenName.substring(0, 1)}
               </Avatar>
@@ -111,9 +124,6 @@ const NavBar = ({ title, showBackButton, showDocOptions }) => {
             logoutUser={logoutUser}
             history={history}
           />
-        )}
-        {docAnchor && (
-          <DocMenu docAnchor={docAnchor} closeDocMenu={closeDocMenu} />
         )}
       </Suspense>
     </div>

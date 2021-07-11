@@ -18,13 +18,6 @@ const DocumentCard = ({
   };
   return (
     <div className={classes.documentCard} onClick={onClick}>
-      <header>
-        <img
-          src="https://freepikpsd.com/media/2019/10/document-png-icon-2-Transparent-Images.png"
-          alt="document icon"
-        />
-      </header>
-
       <Tooltip title={name}>
         <Typography variant="h6">{name}</Typography>
       </Tooltip>

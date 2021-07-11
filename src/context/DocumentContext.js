@@ -1,5 +1,9 @@
 import { createContext, useState } from "react";
-import { getDocumentById, removeDocumentById } from "../api";
+import {
+  getDocumentById,
+  removeDocumentById,
+  updateDocumentById,
+} from "../api";
 import {
   USER_ROLE_EDITOR_OWNERR,
   USER_ROLE_UNDEFINDED,
@@ -17,7 +21,7 @@ export const DocContext = createContext({
   error: Object,
   setError() {},
   fetchDocById(docId) {},
-  updateDocInfo(docId, updatedData) {},
+  updateDocInfo(docId, name) {},
   deleteDocById(docId) {},
   manageDocSharing(docId, users) {},
 });
@@ -26,7 +30,7 @@ export const DocContextProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const [doc, setDoc] = useState(null);
-  const [title, setTitle] = useState("Loading...");
+  const [title, setTitle] = useState("");
   const [error, setError] = useState({ have: false, message: "" });
 
   const fetchDocById = (docId) => {
@@ -57,7 +61,10 @@ export const DocContextProvider = ({ children }) => {
       .finally(() => setIsFetching(false));
   };
 
-  const updateDocInfo = (docId, updatedData) => {};
+  const updateDocInfo = async (docId, name) => {
+    if (!docId || !name) return;
+    return await updateDocumentById({ docId, name });
+  };
 
   const deleteDocById = async (docId) => {
     if (!docId) return;

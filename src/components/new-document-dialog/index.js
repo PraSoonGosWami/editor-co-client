@@ -5,7 +5,7 @@ import CustomCheckbox from "../custom-checkbox";
 import { createNewDocument } from "../../api";
 import CustomDialog from "../custom-dialog";
 
-const NewDocumentDialog = ({ showDialog, handleClose }) => {
+const NewDocumentDialog = ({ open, onClose }) => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [docName, setDocName] = useState("untitled");
   const [posting, setPosting] = useState(false);
@@ -38,8 +38,8 @@ const NewDocumentDialog = ({ showDialog, handleClose }) => {
   };
   return (
     <CustomDialog
-      open={showDialog}
-      onClose={handleClose}
+      open={open}
+      onClose={onClose}
       title="Create new document"
       primaryCTA={addNewDocument}
       primaryText={posting ? "Please wait.." : "Create"}

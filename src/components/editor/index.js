@@ -81,7 +81,7 @@ const Editor = ({ docId, data, role }) => {
 
   //set up socket
   useEffect(() => {
-    const s = io("http://localhost:5000");
+    const s = io("http://192.168.29.109:5000");
     setSocket(s);
     return () => {
       s.disconnect();

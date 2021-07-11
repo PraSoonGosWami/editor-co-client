@@ -3,10 +3,11 @@ import { useHistory } from "react-router-dom";
 import { TextField, Typography } from "@material-ui/core";
 import { DocContext } from "../../context/DocumentContext";
 import CustomDialog from "../custom-dialog";
-const DeleteAlert = ({ open, toggleDeleteHandler }) => {
+const DeleteAlert = ({ open, onClose }) => {
   const history = useHistory();
   const {
-    doc: { _id, name },
+    doc: { _id },
+    title,
     deleteDocById,
   } = useContext(DocContext);
   const [error, setError] = useState(true);
@@ -14,7 +15,7 @@ const DeleteAlert = ({ open, toggleDeleteHandler }) => {
 
   const textChangeHandler = (event) => {
     const value = event.target.value;
-    value !== name ? setError(true) : setError(false);
+    value !== title ? setError(true) : setError(false);
   };
 
   const primaryCTAHandler = () => {
@@ -34,14 +35,14 @@ const DeleteAlert = ({ open, toggleDeleteHandler }) => {
   return (
     <CustomDialog
       open={open}
-      onClose={toggleDeleteHandler}
+      onClose={onClose}
       primaryCTA={primaryCTAHandler}
       primaryText="Delete"
       title="Are you sure you want to delete this document permanently?"
       disabled={error || disableButtons}
       secondaryDisabled={disableButtons}
     >
-      <Typography>{name}</Typography>
+      <Typography>{title}</Typography>
       <TextField
         autoFocus
         margin="dense"

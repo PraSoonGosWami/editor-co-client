@@ -6,7 +6,7 @@ import GoogleSigninButton from "../../components/buttons/google-sign-in";
 import classes from "./styles.module.css";
 
 const LandingPage = ({ history, location }) => {
-  const { profile, signinUser } = useContext(UserContext);
+  const { profile, signinUser, fakeSignIn } = useContext(UserContext);
 
   useEffect(() => {
     profile && history.replace(location?.state?.from?.pathname || "/dashboard");
@@ -39,6 +39,7 @@ const LandingPage = ({ history, location }) => {
           </GoogleSigninButton>
         )}
       />
+      <button onClick={fakeSignIn}>Fake sign in</button>
     </div>
   );
 };
