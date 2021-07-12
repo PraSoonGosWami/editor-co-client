@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { Typography } from "@material-ui/core";
+import { withAlert } from "react-alert";
 import DocumentCard from "../document-cards";
+import Loader from "../loader";
 import SearchInput from "../search-input";
 import { getAllDocuments } from "../../api";
 import classes from "./styles.module.css";
 
-const MyDocuments = ({ value, index }) => {
+const MyDocuments = ({ value, index, alert }) => {
   const [documents, setDocuments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -15,7 +18,7 @@ const MyDocuments = ({ value, index }) => {
         setDocuments(res?.data?.data || []);
       })
       .catch((err) => {
-        console.log(err);
+        alert.error(err?.response?.data?.message || "Something went wrong");
       })
       .finally(() => {
         setIsLoading(false);
@@ -28,19 +31,29 @@ const MyDocuments = ({ value, index }) => {
       role="tabpanel"
       hidden={value !== index}
     >
-      <div className={classes.docQuery}>
-        <SearchInput />
-        <section></section>
-      </div>
-      <div className={classes.myDocumentsContainer}>
-        {!isLoading &&
-          documents?.length > 0 &&
-          documents.map((document) => {
-            return <DocumentCard key={document._id} {...document} />;
-          })}
-      </div>
+      {!isLoading ? (
+        documents?.length > 0 ? (
+          <>
+            <div className={classes.docQuery}>
+              <SearchInput />
+              <section></section>
+            </div>
+            <div className={classes.myDocumentsContainer}>
+              {documents.map((document) => {
+                return <DocumentCard key={document._id} {...document} />;
+              })}
+            </div>
+          </>
+        ) : (
+          <Typography variant="h6">
+            Seems like you have not created any document yet
+          </Typography>
+        )
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 };
 
-export default MyDocuments;
+export default withAlert()(MyDocuments);

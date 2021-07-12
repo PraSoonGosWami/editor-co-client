@@ -1,7 +1,8 @@
-import { useState, lazy, Suspense, useEffect } from "react";
+import { useState, lazy, useEffect } from "react";
 import { Container, Tab, Tabs, Fab } from "@material-ui/core";
 import DocAddIcon from "@material-ui/icons/PostAdd";
 import NavBar from "../../components/nav-bar";
+import SuspenseWithLoader from "../../components/suspense-with-loader";
 import classes from "./styles.module.css";
 
 const MyDocuments = lazy(() => import("../../components/my-documents"));
@@ -43,7 +44,7 @@ const DashboardPage = ({ history, location }) => {
           <Tab label="My documents" value={0} />
           <Tab label="Shared with me" value={1} />
         </Tabs>
-        <Suspense fallback={""}>
+        <SuspenseWithLoader>
           {!value ? (
             <MyDocuments value={value} index={0} />
           ) : (
@@ -52,7 +53,7 @@ const DashboardPage = ({ history, location }) => {
           {showDialog && (
             <NewDocumentDialog open={showDialog} onClose={closeDialog} />
           )}
-        </Suspense>
+        </SuspenseWithLoader>
         <Fab color="primary" className={classes.addFab} onClick={openDialog}>
           <DocAddIcon />
         </Fab>

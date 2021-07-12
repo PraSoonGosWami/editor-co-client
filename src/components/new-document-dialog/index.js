@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { TextField, Typography } from "@material-ui/core";
+import { useAlert } from "react-alert";
 import CustomCheckbox from "../custom-checkbox";
 import { createNewDocument } from "../../api";
 import CustomDialog from "../custom-dialog";
@@ -11,10 +12,12 @@ const NewDocumentDialog = ({ open, onClose }) => {
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState(false);
   const history = useHistory();
+  const alert = useAlert();
 
   const switchHandler = (event) => {
     setIsPrivate(event.target.checked);
   };
+
   const textChangeHandler = (event) => {
     const value = event.target.value;
     setDocName(value);
@@ -33,6 +36,7 @@ const NewDocumentDialog = ({ open, onClose }) => {
         history.push(`/doc/${res?.data?.id}`);
       })
       .catch((err) => {
+        alert.error(err?.response?.data?.message || "Something went wrong!");
         setPosting(false);
       });
   };
@@ -58,7 +62,13 @@ const NewDocumentDialog = ({ open, onClose }) => {
         onChange={textChangeHandler}
       />
       <CustomCheckbox label="Private" onChange={switchHandler} />
-      <Typography style={{ fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>
+      <Typography
+        style={{
+          fontSize: "14px",
+          color: "rgba(0,0,0,0.5)",
+          maxWidth: "300px",
+        }}
+      >
         {isPrivate
           ? "(Only the users with whom you share this document can view or edit)"
           : "(Any one with the URL can view this document)"}

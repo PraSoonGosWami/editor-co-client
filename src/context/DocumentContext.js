@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useAlert } from "react-alert";
 import {
   getDocumentById,
   removeDocumentById,
@@ -22,6 +23,7 @@ export const DocContext = createContext({
   setTitle() {},
   error: Object,
   setError() {},
+  alert,
   fetchDocById(docId) {},
   updateDocInfo(docId, name) {},
   deleteDocById(docId) {},
@@ -34,6 +36,7 @@ export const DocContextProvider = ({ children }) => {
   const [doc, setDoc] = useState(null);
   const [title, setTitle] = useState("");
   const [error, setError] = useState({ have: false, message: "" });
+  const alert = useAlert();
 
   const fetchDocById = (docId) => {
     if (!docId) return;
@@ -53,12 +56,14 @@ export const DocContextProvider = ({ children }) => {
         //redirect to 404 page
         if (status === 404) {
           setError({ have: true, message: data?.message || "" });
+          return;
         }
         //alert with no permissions
         if (status === 401) {
           setError({ have: true, message: data?.message || "" });
+          return;
         }
-        console.error(err?.response);
+        alert.error(data?.message || "Something went wrong");
       })
       .finally(() => setIsFetching(false));
   };
@@ -92,6 +97,7 @@ export const DocContextProvider = ({ children }) => {
     setTitle,
     error,
     setError,
+    alert,
     fetchDocById,
     updateDocInfo,
     deleteDocById,

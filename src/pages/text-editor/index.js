@@ -1,13 +1,16 @@
-import React, { useEffect, useContext, useState, lazy, Suspense } from "react";
-import { useParams } from "react-router";
-import { Typography } from "@material-ui/core";
+import React, { useEffect, useContext, useState, lazy } from "react";
+import { useParams, useHistory } from "react-router";
 import Editor from "../../components/editor";
+import Loader from "../../components/loader";
 import NavBar from "../../components/nav-bar";
+import SuspenseWithLoader from "../../components/suspense-with-loader";
 import { DocContext } from "../../context/DocumentContext";
 import classes from "./styles.module.css";
+import goBack from "../../utils/go-back";
 
 const DeleteAlert = lazy(() => import("../../components/delete-alert"));
 const EditNameDialog = lazy(() => import("../../components/edit-name-dialog"));
+const ErrorComponent = lazy(() => import("../../components/error-component"));
 const UpdareShareDialog = lazy(() =>
   import("../../components/update-share-dialog")
 );
@@ -19,6 +22,7 @@ const TextEditor = () => {
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const history = useHistory();
 
   //fetching the document for the first time
   useEffect(() => {
@@ -39,40 +43,51 @@ const TextEditor = () => {
 
   return (
     <div className={classes.textEditor} id="text-editor-main">
-      <NavBar
-        title={title}
-        showBackButton
-        showDocOptions
-        editName={toggleEditNameHandler}
-        deleteHandler={toggleDeleteHandler}
-        shareHandler={toggleShareHandler}
-      />
-      {!isFetching && role && (
-        <Editor docId={docId} data={doc?.data} role={role} />
+      {isFetching ? (
+        <Loader />
+      ) : (
+        role && (
+          <>
+            <NavBar
+              title={title}
+              showBackButton
+              showDocOptions
+              role={role}
+              editName={toggleEditNameHandler}
+              deleteHandler={toggleDeleteHandler}
+              shareHandler={toggleShareHandler}
+            />
+            <Editor docId={docId} data={doc?.data} role={role} />
+            <SuspenseWithLoader>
+              {showDeleteAlert && (
+                <DeleteAlert
+                  open={showDeleteAlert}
+                  onClose={toggleDeleteHandler}
+                />
+              )}
+              {showNameDialog && (
+                <EditNameDialog
+                  open={showNameDialog}
+                  onClose={toggleEditNameHandler}
+                />
+              )}
+              {showShareDialog && (
+                <UpdareShareDialog
+                  open={showShareDialog}
+                  onClose={toggleShareHandler}
+                />
+              )}
+            </SuspenseWithLoader>
+          </>
+        )
       )}
       {error.have && (
-        <div>
-          <Typography>{error.message}</Typography>
-        </div>
+        <ErrorComponent
+          text={error.message}
+          action={() => goBack(history)}
+          actionText="Back to home"
+        />
       )}
-
-      <Suspense fallback="">
-        {showDeleteAlert && (
-          <DeleteAlert open={showDeleteAlert} onClose={toggleDeleteHandler} />
-        )}
-        {showNameDialog && (
-          <EditNameDialog
-            open={showNameDialog}
-            onClose={toggleEditNameHandler}
-          />
-        )}
-        {showShareDialog && (
-          <UpdareShareDialog
-            open={showShareDialog}
-            onClose={toggleShareHandler}
-          />
-        )}
-      </Suspense>
     </div>
   );
 };

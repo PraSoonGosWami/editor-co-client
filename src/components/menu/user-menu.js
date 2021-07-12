@@ -19,6 +19,9 @@ const UserMenu = ({
   logoutUser,
   history,
 }) => {
+  const authorHandler = () => {
+    window.open("https://prasoon.me", "_blank").focus();
+  };
   return (
     <Menu
       anchorEl={userAnchor}
@@ -39,23 +42,24 @@ const UserMenu = ({
         <Typography>{profile?.name}</Typography>
       </div>
       <Divider />
-      <MenuItem onClick={closeUserMenu}>
+      <Box height={8} />
+      <MenuItem onClick={logoutUser}>
+        <ListItemIcon>
+          <LogoutIcon />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+      <MenuItem onClick={authorHandler}>
         <ListItemIcon>
           <ProfileIcon />
         </ListItemIcon>
-        Profile
+        About the author
       </MenuItem>
       <MenuItem onClick={() => history.push("/terms-and-condition")}>
         <ListItemIcon>
           <DescriptionIcon />
         </ListItemIcon>
         Terms & Conditions
-      </MenuItem>
-      <MenuItem onClick={logoutUser}>
-        <ListItemIcon>
-          <LogoutIcon />
-        </ListItemIcon>
-        Logout
       </MenuItem>
     </Menu>
   );

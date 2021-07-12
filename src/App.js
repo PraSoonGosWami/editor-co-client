@@ -1,8 +1,12 @@
-import { lazy, Suspense, useContext } from "react";
+import { lazy, useContext } from "react";
 import { Route, Switch } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+import Loader from "./components/loader";
 import { UserContext } from "./context/UserContext";
 import PrivateRoute from "./utils/private-routes";
+import SuspenseWithLoader from "./components/suspense-with-loader";
 import { DocContextProvider } from "./context/DocumentContext";
 
 const DashboardPage = lazy(() => import("./pages/dashboard"));
@@ -20,37 +24,46 @@ const theme = createMuiTheme({
   },
 });
 
+const alertOptions = {
+  position: positions.BOTTOM_CENTER,
+  timeout: 5000,
+  offset: "30px",
+  transition: transitions.SCALE,
+};
+
 const App = () => {
   const { profile, isLoading } = useContext(UserContext);
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Suspense fallback={<h3>Loading...</h3>}>
-        {isLoading ? (
-          <h3>Loading...</h3>
-        ) : (
-          <Switch>
-            <Route path="/" exact component={LandingPage} />
-            <PrivateRoute
-              auth={Boolean(profile)}
-              path="/dashboard"
-              exact
-              component={DashboardPage}
-            />
+      <AlertProvider template={AlertTemplate} {...alertOptions}>
+        <SuspenseWithLoader>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <Switch>
+              <Route path="/" exact component={LandingPage} />
+              <PrivateRoute
+                auth={Boolean(profile)}
+                path="/dashboard"
+                exact
+                component={DashboardPage}
+              />
 
-            <PrivateRoute
-              auth={Boolean(profile)}
-              path="/doc/:id"
-              exact
-              component={() => (
-                <DocContextProvider>
-                  <TextEditor />
-                </DocContextProvider>
-              )}
-            />
-          </Switch>
-        )}
-      </Suspense>
+              <PrivateRoute
+                auth={Boolean(profile)}
+                path="/doc/:id"
+                exact
+                component={() => (
+                  <DocContextProvider>
+                    <TextEditor />
+                  </DocContextProvider>
+                )}
+              />
+            </Switch>
+          )}
+        </SuspenseWithLoader>
+      </AlertProvider>
     </MuiThemeProvider>
   );
 };

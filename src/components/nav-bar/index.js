@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, useContext } from "react";
+import { lazy, useState, useContext } from "react";
 import { useHistory } from "react-router";
 import {
   Avatar,
@@ -8,6 +8,7 @@ import {
   AppBar,
   IconButton,
   Button,
+  Chip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -16,6 +17,13 @@ import EditIcon from "@material-ui/icons/Edit";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import PrintIcon from "@material-ui/icons/Print";
 import { UserContext } from "../../context/UserContext";
+import SuspenseWithLoader from "../suspense-with-loader";
+import goBack from "../../utils/go-back";
+import {
+  USER_ROLE_OWNER,
+  USER_ROLE_EDITOR,
+  USER_ROLE_VIEWER,
+} from "../../constants";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
 const UserMenu = lazy(() => import("../menu/user-menu"));
@@ -24,6 +32,7 @@ const NavBar = ({
   title,
   showBackButton,
   showDocOptions,
+  role,
   editName,
   deleteHandler,
   shareHandler,
@@ -33,6 +42,7 @@ const NavBar = ({
   const classes = useStyles();
   const { profile, logoutUser } = useContext(UserContext);
   const history = useHistory();
+  const isOwner = role === USER_ROLE_OWNER;
 
   const openUserMenu = (event) => {
     setUserAnchor(event.currentTarget);
@@ -43,7 +53,7 @@ const NavBar = ({
   };
 
   const onBackClick = () => {
-    history.push("/dashboard");
+    goBack(history);
   };
 
   const handlePrintButtonClick = () => {
@@ -77,29 +87,39 @@ const NavBar = ({
           <div style={{ display: "flex", alignItems: "center" }}>
             {showDocOptions && (
               <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disableElevation
-                  startIcon={<PeopleAltIcon />}
-                  onClick={shareHandler}
-                  style={{ marginRight: 8 }}
-                >
-                  Share
-                </Button>
-                <Tooltip title="Edit name">
-                  <IconButton onClick={editName} color="primary">
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
+                {isOwner && (
+                  <>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disableElevation
+                      startIcon={<PeopleAltIcon />}
+                      onClick={shareHandler}
+                      style={{ marginRight: 8 }}
+                    >
+                      Share
+                    </Button>
+                    <Tooltip title="Edit name">
+                      <IconButton onClick={editName} color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete document">
+                      <IconButton color="primary" onClick={deleteHandler}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
+                {role === USER_ROLE_VIEWER && (
+                  <Chip label="You have viewer's access" />
+                )}
+                {role === USER_ROLE_EDITOR && (
+                  <Chip label="You have editor's access" />
+                )}
                 <IconButton color="primary" onClick={handlePrintButtonClick}>
                   <PrintIcon />
                 </IconButton>
-                <Tooltip title="Delete document">
-                  <IconButton color="primary" onClick={deleteHandler}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
               </>
             )}
             <Tooltip title={profile?.name ?? ""}>
@@ -115,7 +135,7 @@ const NavBar = ({
         </Toolbar>
       </AppBar>
 
-      <Suspense fallback={""}>
+      <SuspenseWithLoader>
         {userAnchor && (
           <UserMenu
             profile={profile}
@@ -125,7 +145,7 @@ const NavBar = ({
             history={history}
           />
         )}
-      </Suspense>
+      </SuspenseWithLoader>
     </div>
   );
 };

@@ -2,12 +2,14 @@ import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { TextField, Typography } from "@material-ui/core";
 import { DocContext } from "../../context/DocumentContext";
+import goBack from "../../utils/go-back";
 import CustomDialog from "../custom-dialog";
 const DeleteAlert = ({ open, onClose }) => {
   const history = useHistory();
   const {
     doc: { _id },
     title,
+    alert,
     deleteDocById,
   } = useContext(DocContext);
   const [error, setError] = useState(true);
@@ -22,13 +24,12 @@ const DeleteAlert = ({ open, onClose }) => {
     setDisableButtons(true);
     deleteDocById(_id)
       .then((res) => {
-        console.log(res);
-        history.length > 2 ? history.goBack() : history.replace("/dashboard");
+        alert.success("Document deleted");
+        goBack(history);
       })
       .catch((err) => {
-        console.log(err?.response);
-        alert(err?.response?.data?.message);
-        history.length > 2 ? history.goBack() : history.replace("/dashboard");
+        alert.error(err?.response?.data?.message || "Something went wrong");
+        goBack(history);
       });
   };
 

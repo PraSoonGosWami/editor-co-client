@@ -1,7 +1,17 @@
 .myDocuments {
   padding: 14px 0;
+  height: 70vh;
+  position: relative;
 }
 
+.myDocuments > h6 {
+  text-align: center;
+  margin: 0 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .myDocumentsContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

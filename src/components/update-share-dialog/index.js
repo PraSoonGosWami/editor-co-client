@@ -9,6 +9,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import CustomCheckbox from "../custom-checkbox";
 import CustomDialog from "../custom-dialog";
 import { DocContext } from "../../context/DocumentContext";
@@ -18,6 +19,7 @@ import validateEmail from "../../utils/validiate-email";
 const UpdareShareDialog = ({ open, onClose }) => {
   const {
     doc: { _id, editors, viewers, private: prv },
+    alert,
     setDoc,
     manageDocSharing,
   } = useContext(DocContext);
@@ -77,10 +79,11 @@ const UpdareShareDialog = ({ open, onClose }) => {
           editors: editorsArr,
           viewers: viewersArr,
         }));
+        alert.success("Sharing settings updated");
         onClose();
       })
       .catch((err) => {
-        console.log(err?.response);
+        alert.error(err?.response?.data?.message || "Something went wrong!");
         setUpdating(false);
       });
   };
@@ -90,6 +93,7 @@ const UpdareShareDialog = ({ open, onClose }) => {
     arr.splice(index, 1);
     fromEditor ? setEditorsArr([...arr]) : setViewersArr([...arr]);
   };
+
   return (
     <CustomDialog
       open={open}
@@ -115,7 +119,6 @@ const UpdareShareDialog = ({ open, onClose }) => {
 
       <Divider />
       <Box height={8} />
-
       <div style={{ marginBottom: "20px", maxWidth: "400px" }}>
         <Typography>Manage editors</Typography>
         <form onSubmit={editorFromHandler} ref={editorFormRef}>
@@ -151,7 +154,7 @@ const UpdareShareDialog = ({ open, onClose }) => {
         ))}
       </div>
 
-      <div style={{ maxWidth: "400px" }}>
+      <div style={{ marginBottom: "20px", maxWidth: "400px" }}>
         <Typography>Manage viewers</Typography>
         <form onSubmit={viewerFromHandler} ref={viewerFormRef}>
           <TextField
@@ -184,6 +187,18 @@ const UpdareShareDialog = ({ open, onClose }) => {
             onDelete={() => deleteEmails(false, index)}
           />
         ))}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <InfoOutlinedIcon fontSize="small" />
+        <Typography style={{ fontSize: "14px", marginLeft: 4, marginTop: 2 }}>
+          Currently only gmail accounts are supported for sharing
+        </Typography>
       </div>
     </CustomDialog>
   );

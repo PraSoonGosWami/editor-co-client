@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { TextField } from "@material-ui/core";
 import CustomDialog from "../custom-dialog";
 import { DocContext } from "../../context/DocumentContext";
@@ -7,6 +7,7 @@ const EditNameDialog = ({ open, onClose }) => {
   const {
     doc: { _id },
     title,
+    alert,
     updateDocInfo,
     setTitle,
   } = useContext(DocContext);
@@ -31,10 +32,11 @@ const EditNameDialog = ({ open, onClose }) => {
     updateDocInfo(_id, docName)
       .then((res) => {
         setTitle(docName);
+        alert.success("Title updated");
         onClose();
       })
       .catch((err) => {
-        alert(err?.response?.data?.message || "Something went wrong!");
+        alert.error(err?.response?.data?.message || "Something went wrong!");
         setDisabled(false);
       });
   };
