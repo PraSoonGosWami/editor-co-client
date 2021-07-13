@@ -8,17 +8,10 @@ import {
   ListItemIcon,
 } from "@material-ui/core";
 
-import DescriptionIcon from "@material-ui/icons/Description";
 import ProfileIcon from "@material-ui/icons/Person";
 import LogoutIcon from "@material-ui/icons/ExitToAppOutlined";
 
-const UserMenu = ({
-  profile,
-  userAnchor,
-  closeUserMenu,
-  logoutUser,
-  history,
-}) => {
+const UserMenu = ({ profile, userAnchor, closeUserMenu, logoutUser }) => {
   const authorHandler = () => {
     window.open("https://prasoon.me", "_blank").focus();
   };
@@ -54,12 +47,6 @@ const UserMenu = ({
           <ProfileIcon />
         </ListItemIcon>
         About the author
-      </MenuItem>
-      <MenuItem onClick={() => history.push("/terms-and-condition")}>
-        <ListItemIcon>
-          <DescriptionIcon />
-        </ListItemIcon>
-        Terms & Conditions
       </MenuItem>
     </Menu>
   );

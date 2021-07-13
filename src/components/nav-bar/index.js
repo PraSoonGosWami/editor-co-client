@@ -24,6 +24,7 @@ import {
   USER_ROLE_EDITOR,
   USER_ROLE_VIEWER,
 } from "../../constants";
+import AppLogo from "../../assets/app-logo.png";
 import TopBarStyle from "../../mui-styles/top-bar-styles";
 
 const UserMenu = lazy(() => import("../menu/user-menu"));
@@ -80,7 +81,7 @@ const NavBar = ({
                 {title}
               </Typography>
             ) : (
-              <Typography className={classes.title}>Editor-co</Typography>
+              <img className={classes.appLogo} src={AppLogo} alt="Editor-Co" />
             )}
           </div>
 
@@ -142,7 +143,6 @@ const NavBar = ({
             userAnchor={userAnchor}
             closeUserMenu={closeUserMenu}
             logoutUser={logoutUser}
-            history={history}
           />
         )}
       </SuspenseWithLoader>

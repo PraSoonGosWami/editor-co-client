@@ -48,6 +48,12 @@ const TopBarStyle = (theme, showBackButton) => {
       height: "35px",
       marginLeft: "12px",
     },
+    appLogo: {
+      maxWidth: 140,
+      [theme.breakpoints.down("sm")]: {
+        maxWidth: 110,
+      },
+    },
   };
 };
 
