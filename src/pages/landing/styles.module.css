@@ -23,6 +23,10 @@
   text-align: center;
 }
 
+.landingIntro > img {
+  max-width: 500px;
+  margin: 24px 16px;
+}
 .landingIntro > h2 {
   margin-bottom: 10px;
 }

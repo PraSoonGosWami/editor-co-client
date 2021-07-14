@@ -1,12 +1,14 @@
 import { useContext, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import { Typography } from "@material-ui/core";
+import appLogo from "../../assets/app-logo.png";
 import { UserContext } from "../../context/UserContext";
 import GoogleSigninButton from "../../components/buttons/google-sign-in";
+import { GOOGLE_CLIENT_ID } from "../../constants";
 import classes from "./styles.module.css";
 
 const LandingPage = ({ history, location }) => {
-  const { profile, signinUser, fakeSignIn } = useContext(UserContext);
+  const { profile, signinUser } = useContext(UserContext);
 
   useEffect(() => {
     profile && history.replace(location?.state?.from?.pathname || "/dashboard");
@@ -23,12 +25,12 @@ const LandingPage = ({ history, location }) => {
   return (
     <div className={classes.landing}>
       <section className={classes.landingIntro}>
-        <Typography variant="h2">Editor-Co</Typography>
+        <img src={appLogo} alt="Editor-Co" />
         <Typography>A basic realtime collaborative text editor</Typography>
         <Typography>Let's get started</Typography>
       </section>
       <GoogleLogin
-        clientId="32272026461-hpch5mbll357l8ksb5bvfi2v85p0togg.apps.googleusercontent.com"
+        clientId={GOOGLE_CLIENT_ID}
         onSuccess={googleSuccess}
         onFailure={googleFailure}
         cookiePolicy={"single_host_origin"}
@@ -39,7 +41,6 @@ const LandingPage = ({ history, location }) => {
           </GoogleSigninButton>
         )}
       />
-      <button onClick={fakeSignIn}>Fake sign in</button>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { LOCAL_STORAGE_USER_DATA_KEY } from "../constants";
+import { LOCAL_STORAGE_USER_DATA_KEY, SERVER_URL } from "../constants";
 
 const API = axios.create({
-  baseURL: "http://192.168.29.109:5000/api/v1",
+  baseURL: `${SERVER_URL}/api/v1`,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",

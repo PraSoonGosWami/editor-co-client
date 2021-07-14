@@ -10,12 +10,14 @@ import { Typography } from "@material-ui/core";
 const MyDocuments = ({ value, index, alert }) => {
   const [documents, setDocuments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
     getAllSharedDocuments()
       .then((res) => {
-        setDocuments(res?.data || []);
+        setData(res?.data || {});
+        setDocuments(res?.data || {});
       })
       .catch((err) => {
         alert.error(err?.response?.data?.message || "Something went wrong");
@@ -25,6 +27,18 @@ const MyDocuments = ({ value, index, alert }) => {
       });
   }, []);
 
+  const searchHandler = (event) => {
+    const value = event.target.value;
+    if (!value || value?.length === 0) setDocuments({ ...data });
+    const filterdEditor = data.editor.filter((d) =>
+      d.name.toLowerCase().includes(value.toLowerCase())
+    );
+    const filterdViewer = data.viewer.filter((d) =>
+      d.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setDocuments({ editor: [...filterdEditor], viewer: [...filterdViewer] });
+  };
+
   return (
     <div
       className={classes.myDocuments}
@@ -33,9 +47,9 @@ const MyDocuments = ({ value, index, alert }) => {
     >
       {!isLoading ? (
         <>
-          {(documents?.editor.length > 0 || documents?.viewer.length > 0) && (
+          {(data?.editor.length > 0 || data?.viewer.length > 0) && (
             <div className={classes.docQuery}>
-              <SearchInput />
+              <SearchInput onChange={searchHandler} />
             </div>
           )}
           <div className={classes.myDocumentsContainer}>
@@ -60,7 +74,15 @@ const MyDocuments = ({ value, index, alert }) => {
                 );
               })}
           </div>
-          {documents?.editor?.length <= 0 && documents?.viewer?.length <= 0 && (
+          {documents?.editor?.length <= 0 &&
+            documents?.viewer?.length <= 0 &&
+            data?.editor?.length > 0 &&
+            data?.viewer?.length > 0 && (
+              <Typography variant="h6">
+                No results found for your query
+              </Typography>
+            )}
+          {data?.editor?.length <= 0 && data?.viewer?.length <= 0 && (
             <Typography variant="h6">
               Seems like you don't have any documents shared with you
             </Typography>

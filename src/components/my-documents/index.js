@@ -10,11 +10,13 @@ import classes from "./styles.module.css";
 const MyDocuments = ({ value, index, alert }) => {
   const [documents, setDocuments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
     getAllDocuments()
       .then((res) => {
+        setData(res?.data?.data || []);
         setDocuments(res?.data?.data || []);
       })
       .catch((err) => {
@@ -25,6 +27,16 @@ const MyDocuments = ({ value, index, alert }) => {
       });
   }, []);
 
+  const searchHandler = (event) => {
+    const value = event.target.value;
+    if (!value || value?.length === 0) setDocuments([...data]);
+    const filterdData = data.filter((d) =>
+      d.name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    setDocuments([...filterdData]);
+  };
+
   return (
     <div
       className={classes.myDocuments}
@@ -32,23 +44,29 @@ const MyDocuments = ({ value, index, alert }) => {
       hidden={value !== index}
     >
       {!isLoading ? (
-        documents?.length > 0 ? (
-          <>
+        <>
+          {data?.length > 0 ? (
             <div className={classes.docQuery}>
-              <SearchInput />
-              <section></section>
+              <SearchInput onChange={searchHandler} />
             </div>
+          ) : (
+            <Typography variant="h6">
+              Seems like you have not created any document yet
+            </Typography>
+          )}
+          {documents?.length > 0 && (
             <div className={classes.myDocumentsContainer}>
               {documents.map((document) => {
                 return <DocumentCard key={document._id} {...document} />;
               })}
             </div>
-          </>
-        ) : (
-          <Typography variant="h6">
-            Seems like you have not created any document yet
-          </Typography>
-        )
+          )}
+          {documents?.length <= 0 && data?.length > 0 && (
+            <Typography variant="h6">
+              No results found for your query
+            </Typography>
+          )}
+        </>
       ) : (
         <Loader />
       )}
