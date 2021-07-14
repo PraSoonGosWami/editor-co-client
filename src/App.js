@@ -1,7 +1,8 @@
-import { lazy, useContext } from "react";
+import { lazy, useContext, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import ReactGA from "react-ga";
 import AlertTemplate from "react-alert-template-basic";
 import Loader from "./components/loader";
 import { UserContext } from "./context/UserContext";
@@ -27,12 +28,21 @@ const theme = createMuiTheme({
 const alertOptions = {
   position: positions.BOTTOM_CENTER,
   timeout: 5000,
-  offset: "30px",
+  offset: "8px",
   transition: transitions.SCALE,
 };
 
 const App = () => {
   const { profile, isLoading } = useContext(UserContext);
+  //google analytics
+  function initializeReactGA() {
+    ReactGA.initialize("G-D5GKLZXBTG");
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }
+
+  useEffect(() => {
+    initializeReactGA();
+  }, []);
 
   return (
     <MuiThemeProvider theme={theme}>

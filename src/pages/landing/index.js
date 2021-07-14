@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import { Typography } from "@material-ui/core";
+import { useAlert } from "react-alert";
 import appLogo from "../../assets/app-logo.png";
 import { UserContext } from "../../context/UserContext";
 import GoogleSigninButton from "../../components/buttons/google-sign-in";
@@ -9,7 +10,7 @@ import classes from "./styles.module.css";
 
 const LandingPage = ({ history, location }) => {
   const { profile, signinUser } = useContext(UserContext);
-
+  const alert = useAlert();
   useEffect(() => {
     profile && history.replace(location?.state?.from?.pathname || "/dashboard");
   }, [profile, history, location]);
@@ -19,7 +20,7 @@ const LandingPage = ({ history, location }) => {
     signinUser({ googleId, profile, token });
   };
   const googleFailure = (err) => {
-    console.log(err);
+    alert.error("Something went wrong! Cannot login");
   };
 
   return (

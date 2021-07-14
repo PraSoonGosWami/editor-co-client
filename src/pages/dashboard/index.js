@@ -3,6 +3,7 @@ import { Container, Tab, Tabs, Fab } from "@material-ui/core";
 import DocAddIcon from "@material-ui/icons/PostAdd";
 import NavBar from "../../components/nav-bar";
 import SuspenseWithLoader from "../../components/suspense-with-loader";
+import { LOCAL_STORAGE_TUTORIAL } from "../../constants";
 import classes from "./styles.module.css";
 
 const MyDocuments = lazy(() => import("../../components/my-documents"));
@@ -10,10 +11,20 @@ const SharedDocuments = lazy(() => import("../../components/shared-documents"));
 const NewDocumentDialog = lazy(() =>
   import("../../components/new-document-dialog")
 );
+const TutorialDialog = lazy(() => import("../../components/tutorial-dialog"));
 
 const DashboardPage = ({ history, location }) => {
   const [value, setValue] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    const tut = localStorage.getItem(LOCAL_STORAGE_TUTORIAL);
+    if (!tut) {
+      setShowTutorial(true);
+      localStorage.setItem(LOCAL_STORAGE_TUTORIAL, false);
+    }
+  }, []);
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -29,6 +40,9 @@ const DashboardPage = ({ history, location }) => {
   };
   const closeDialog = () => {
     setShowDialog(false);
+  };
+  const closeTutorial = () => {
+    setShowTutorial(false);
   };
 
   return (
@@ -52,6 +66,9 @@ const DashboardPage = ({ history, location }) => {
           )}
           {showDialog && (
             <NewDocumentDialog open={showDialog} onClose={closeDialog} />
+          )}
+          {showTutorial && (
+            <TutorialDialog open={showTutorial} onClose={closeTutorial} />
           )}
         </SuspenseWithLoader>
         <Fab color="primary" className={classes.addFab} onClick={openDialog}>

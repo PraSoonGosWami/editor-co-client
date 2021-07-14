@@ -6,7 +6,8 @@
 
 .myDocuments > h6 {
   text-align: center;
-  margin: 0 18px;
+  margin: 0;
+  width: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
