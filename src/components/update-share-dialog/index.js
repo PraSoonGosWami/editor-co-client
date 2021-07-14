@@ -117,6 +117,12 @@ const UpdareShareDialog = ({ open, onClose }) => {
         </Typography>
       </div>
 
+      <Typography style={{ fontSize: "14px", maxWidth: 400 }}>
+        Enter email and then press enter or tap on check button on the right to
+        add email to the list. Finally tap on update button to save changes
+      </Typography>
+      <Box height={8} />
+
       <Divider />
       <Box height={8} />
       <div style={{ marginBottom: "20px", maxWidth: "400px" }}>
@@ -193,11 +199,12 @@ const UpdareShareDialog = ({ open, onClose }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          maxWidth: 400,
         }}
       >
         <InfoOutlinedIcon fontSize="small" />
-        <Typography style={{ fontSize: "14px", marginLeft: 4, marginTop: 2 }}>
-          Currently only gmail accounts are supported for sharing
+        <Typography style={{ fontSize: "14px", marginLeft: 6, marginTop: 2 }}>
+          Currently only gmail accounts are supported for sharing.
         </Typography>
       </div>
     </CustomDialog>

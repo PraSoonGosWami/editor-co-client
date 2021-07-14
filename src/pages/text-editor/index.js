@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState, lazy } from "react";
 import { useParams, useHistory } from "react-router";
+import ReactGA from "react-ga";
 import Editor from "../../components/editor";
 import Loader from "../../components/loader";
 import NavBar from "../../components/nav-bar";
@@ -27,6 +28,7 @@ const TextEditor = () => {
   //fetching the document for the first time
   useEffect(() => {
     fetchDocById(docId);
+    ReactGA.pageview("/doc");
   }, [docId]);
 
   const toggleEditNameHandler = () => {

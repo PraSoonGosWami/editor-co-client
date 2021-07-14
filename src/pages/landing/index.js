@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+import ReactGA from "react-ga";
 import GoogleLogin from "react-google-login";
 import { Typography } from "@material-ui/core";
 import { useAlert } from "react-alert";
@@ -11,6 +12,9 @@ import classes from "./styles.module.css";
 const LandingPage = ({ history, location }) => {
   const { profile, signinUser } = useContext(UserContext);
   const alert = useAlert();
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
   useEffect(() => {
     profile && history.replace(location?.state?.from?.pathname || "/dashboard");
   }, [profile, history, location]);

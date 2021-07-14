@@ -1,6 +1,6 @@
 .myDocuments {
   padding: 14px 0;
-  height: 70vh;
+  min-height: 70vh;
   position: relative;
 }
 

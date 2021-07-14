@@ -112,12 +112,15 @@ const NavBar = ({
                     </Tooltip>
                   </>
                 )}
-                {role === USER_ROLE_VIEWER && (
-                  <Chip label="You have viewer's access" />
-                )}
-                {role === USER_ROLE_EDITOR && (
-                  <Chip label="You have editor's access" />
-                )}
+                {role === USER_ROLE_VIEWER && <Chip label="Viewer's access" />}
+                {role === USER_ROLE_EDITOR && <Chip label="Editor's access" />}
+                {/* {(role === USER_ROLE_VIEWER || role === USER_ROLE_EDITOR) && (
+                  <Chip
+                    label="Owned by Prasoon Goswami"
+                    variant="outlined"
+                    style={{ marginLeft: 4 }}
+                  />
+                )} */}
                 <IconButton color="primary" onClick={handlePrintButtonClick}>
                   <PrintIcon />
                 </IconButton>

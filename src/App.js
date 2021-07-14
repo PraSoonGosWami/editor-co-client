@@ -36,7 +36,7 @@ const App = () => {
   const { profile, isLoading } = useContext(UserContext);
   //google analytics
   function initializeReactGA() {
-    ReactGA.initialize("G-D5GKLZXBTG");
+    ReactGA.initialize("UA-202272329-1");
     ReactGA.pageview(window.location.pathname + window.location.search);
   }
 

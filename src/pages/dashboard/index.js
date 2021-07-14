@@ -1,5 +1,6 @@
 import { useState, lazy, useEffect } from "react";
 import { Container, Tab, Tabs, Fab } from "@material-ui/core";
+import ReactGA from "react-ga";
 import DocAddIcon from "@material-ui/icons/PostAdd";
 import NavBar from "../../components/nav-bar";
 import SuspenseWithLoader from "../../components/suspense-with-loader";
@@ -24,6 +25,7 @@ const DashboardPage = ({ history, location }) => {
       setShowTutorial(true);
       localStorage.setItem(LOCAL_STORAGE_TUTORIAL, false);
     }
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
 
   useEffect(() => {
