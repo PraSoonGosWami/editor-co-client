@@ -52,7 +52,7 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ];
 
-const Editor = ({ docId, data, role }) => {
+const Editor = ({ docId, role }) => {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
   const [cursors, setCursor] = useState(null);
@@ -68,11 +68,16 @@ const Editor = ({ docId, data, role }) => {
       theme: "snow",
       modules: {
         toolbar: TOOLBAR_OPTIONS,
-        cursors: true,
+        cursors: {
+          hideDelayMs: 3000,
+          hideSpeedMs: 0,
+          transformOnTextChange: true,
+        },
         imageResize: {
           parchment: Quill.import("parchment"),
         },
       },
+      scrollingContainer: "html",
     });
     q.disable();
     q.setText("Loading...");
@@ -90,36 +95,19 @@ const Editor = ({ docId, data, role }) => {
     };
   }, []);
 
-  //populating the editor with data
-  useEffect(() => {
-    if (!quill || data === null) return;
-    quill.setContents(data);
-    role === USER_ROLE_EDITOR || role === USER_ROLE_OWNER
-      ? quill.enable()
-      : quill.disable();
-  }, [quill, data, role]);
-
   //join the room
+  //populating the editor with data
+
   useEffect(() => {
     if (!socket || !quill) return;
     socket.emit("join-room", { docId, userId: profile.googleId });
-  }, [socket, quill]);
-
-  //save changes every 2 seconds
-  useEffect(() => {
-    if (socket == null || quill == null) return;
-
-    const interval = setInterval(() => {
-      socket.emit("save-document", {
-        data: quill.getContents(),
-        userId: profile.googleId,
-      });
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [socket, quill]);
+    socket.on("load-document", (document) => {
+      quill.setContents(document);
+      role === USER_ROLE_EDITOR || role === USER_ROLE_OWNER
+        ? quill.enable()
+        : quill.disable();
+    });
+  }, [socket, quill, docId, profile]);
 
   //updates changes
   useEffect(() => {
@@ -133,6 +121,10 @@ const Editor = ({ docId, data, role }) => {
       )
         return;
       socket.emit("send-changes", delta);
+      socket.emit("save-document", {
+        data: quill.getContents(),
+        userId: profile.googleId,
+      });
     };
     const cursorHandler = (range, oldRange, source) => {
       if (role === USER_ROLE_VIEWER || role === USER_ROLE_UNDEFINDED) return;
@@ -164,7 +156,7 @@ const Editor = ({ docId, data, role }) => {
       if (range) {
         cursors.createCursor(userId, userName, color);
         cursors.moveCursor(userId, range);
-        cursors.toggleFlag(userId, true);
+        cursors.toggleFlag(userId, false);
       } else {
         cursors.removeCursor(userId);
       }

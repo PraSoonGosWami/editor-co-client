@@ -18,7 +18,7 @@ const UpdareShareDialog = lazy(() =>
 
 const TextEditor = () => {
   const { id: docId } = useParams();
-  const { role, isFetching, doc, title, error, fetchDocById } =
+  const { role, isFetching, title, error, fetchDocById } =
     useContext(DocContext);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -30,6 +30,10 @@ const TextEditor = () => {
     fetchDocById(docId);
     ReactGA.pageview("/doc");
   }, [docId]);
+
+  useEffect(() => {
+    if (title) document.title = title;
+  }, [title]);
 
   const toggleEditNameHandler = () => {
     setShowNameDialog((prevState) => !prevState);
@@ -59,7 +63,7 @@ const TextEditor = () => {
               deleteHandler={toggleDeleteHandler}
               shareHandler={toggleShareHandler}
             />
-            <Editor docId={docId} data={doc?.data} role={role} />
+            <Editor docId={docId} role={role} />
             <SuspenseWithLoader>
               {showDeleteAlert && (
                 <DeleteAlert

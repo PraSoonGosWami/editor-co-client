@@ -26,6 +26,7 @@ const DashboardPage = ({ history, location }) => {
       localStorage.setItem(LOCAL_STORAGE_TUTORIAL, false);
     }
     ReactGA.pageview(window.location.pathname + window.location.search);
+    document.title = "Editor-Co | Collaborative text editor";
   }, []);
 
   useEffect(() => {

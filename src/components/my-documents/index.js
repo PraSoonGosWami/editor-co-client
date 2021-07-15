@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { Typography } from "@material-ui/core";
 import { withAlert } from "react-alert";
 import DocumentCard from "../document-cards";
@@ -13,19 +14,28 @@ const MyDocuments = ({ value, index, alert }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
+    const onRequest = axios.CancelToken.source();
+    fetchDocuments(onRequest.token);
+    return () => {
+      onRequest.cancel();
+    };
+  }, []);
+
+  const fetchDocuments = (token) => {
     setIsLoading(true);
-    getAllDocuments()
+    getAllDocuments(token)
       .then((res) => {
         setData(res?.data?.data || []);
         setDocuments(res?.data?.data || []);
       })
       .catch((err) => {
-        alert.error(err?.response?.data?.message || "Something went wrong");
+        err?.response &&
+          alert.error(err?.response?.data?.message || "Something went wrong");
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  };
 
   const searchHandler = (event) => {
     const value = event.target.value;

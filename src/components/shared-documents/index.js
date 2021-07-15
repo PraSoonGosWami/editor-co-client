@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { withAlert } from "react-alert";
 import DocumentCard from "../document-cards";
 import Loader from "../loader";
@@ -13,8 +14,16 @@ const MyDocuments = ({ value, index, alert }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
+    const onRequest = axios.CancelToken.source();
+    fetchSharedDocument(onRequest.token);
+    return () => {
+      onRequest.cancel();
+    };
+  }, []);
+
+  const fetchSharedDocument = (token) => {
     setIsLoading(true);
-    getAllSharedDocuments()
+    getAllSharedDocuments(token)
       .then((res) => {
         setData(res?.data || {});
         setDocuments(res?.data || {});
@@ -25,7 +34,7 @@ const MyDocuments = ({ value, index, alert }) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  };
 
   const searchHandler = (event) => {
     const value = event.target.value;

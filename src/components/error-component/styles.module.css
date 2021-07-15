@@ -10,4 +10,6 @@
 
 .errorComponent > h4 {
   margin-bottom: 32px;
+  text-align: center;
+  font-size: 30px;
 }

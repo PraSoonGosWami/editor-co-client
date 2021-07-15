@@ -38,7 +38,9 @@
 .editor .ql-snow .ql-picker.ql-size .ql-picker-item::before {
   content: attr(data-value);
 }
-
+.editor .ql-clipboard {
+  position: fixed !important;
+}
 @media print {
   body {
     background: none;

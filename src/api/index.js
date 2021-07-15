@@ -20,8 +20,10 @@ API.interceptors.request.use((req) => {
 
 export const signinWithGoogle = (userData) => API.post("/auth", userData);
 export const createNewDocument = (data) => API.post("/doc/create", data);
-export const getAllDocuments = () => API.get("/doc/get/user");
-export const getAllSharedDocuments = () => API.get("/doc/get/shared");
+export const getAllDocuments = (token) =>
+  API.get("/doc/get/user", { cancelToken: token });
+export const getAllSharedDocuments = (token) =>
+  API.get("/doc/get/shared", { ancelToken: token });
 export const getDocumentById = (docId) => API.post("/doc/get/byId", docId);
 export const removeDocumentById = (docId) =>
   API.post("/doc/delete/byId", docId);
