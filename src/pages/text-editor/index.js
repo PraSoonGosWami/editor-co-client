@@ -10,6 +10,7 @@ import classes from "./styles.module.css";
 import goBack from "../../utils/go-back";
 
 const DeleteAlert = lazy(() => import("../../components/delete-alert"));
+const DocInfoDialog = lazy(() => import("../../components/doc-info-dialog"));
 const EditNameDialog = lazy(() => import("../../components/edit-name-dialog"));
 const ErrorComponent = lazy(() => import("../../components/error-component"));
 const UpdareShareDialog = lazy(() =>
@@ -23,6 +24,7 @@ const TextEditor = () => {
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
   const history = useHistory();
 
   //fetching the document for the first time
@@ -47,6 +49,10 @@ const TextEditor = () => {
     setShowShareDialog((prevState) => !prevState);
   };
 
+  const toggleInfoHandler = () => {
+    setShowInfoDialog((prevState) => !prevState);
+  };
+
   return (
     <div className={classes.textEditor} id="text-editor-main">
       {isFetching ? (
@@ -62,6 +68,7 @@ const TextEditor = () => {
               editName={toggleEditNameHandler}
               deleteHandler={toggleDeleteHandler}
               shareHandler={toggleShareHandler}
+              infoHandler={toggleInfoHandler}
             />
             <Editor docId={docId} role={role} />
             <SuspenseWithLoader>
@@ -81,6 +88,12 @@ const TextEditor = () => {
                 <UpdareShareDialog
                   open={showShareDialog}
                   onClose={toggleShareHandler}
+                />
+              )}
+              {showInfoDialog && (
+                <DocInfoDialog
+                  open={showInfoDialog}
+                  onClose={toggleInfoHandler}
                 />
               )}
             </SuspenseWithLoader>

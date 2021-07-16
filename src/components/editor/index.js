@@ -11,6 +11,7 @@ import {
   USER_ROLE_UNDEFINDED,
   SERVER_URL,
 } from "../../constants";
+import Collaborators from "../collaborators";
 import "quill/dist/quill.snow.css";
 import "./editor.css";
 
@@ -50,12 +51,14 @@ const TOOLBAR_OPTIONS = [
   [{ align: [] }],
   ["image", "blockquote", "code-block"],
   ["clean"],
+  ["print"],
 ];
 
 const Editor = ({ docId, role }) => {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
   const [cursors, setCursor] = useState(null);
+  const [collab, setCollab] = useState(null);
 
   const { profile } = useContext(UserContext);
 
@@ -68,11 +71,7 @@ const Editor = ({ docId, role }) => {
       theme: "snow",
       modules: {
         toolbar: TOOLBAR_OPTIONS,
-        cursors: {
-          hideDelayMs: 3000,
-          hideSpeedMs: 0,
-          transformOnTextChange: true,
-        },
+        cursors: true,
         imageResize: {
           parchment: Quill.import("parchment"),
         },
@@ -82,7 +81,11 @@ const Editor = ({ docId, role }) => {
     q.disable();
     q.setText("Loading...");
     setCursor(q.getModule("cursors"));
-
+    const qTbar = q.getModule("toolbar");
+    qTbar.addHandler("print", () => console.log("print"));
+    document
+      .querySelector(".ql-print")
+      .addEventListener("click", () => window.print());
     setQuill(q);
   }, []);
 
@@ -91,16 +94,19 @@ const Editor = ({ docId, role }) => {
     const s = io(SERVER_URL);
     setSocket(s);
     return () => {
+      s.emit("update-cursor", {
+        userId: profile.googleId,
+        range: null,
+      });
       s.disconnect();
     };
   }, []);
 
   //join the room
   //populating the editor with data
-
   useEffect(() => {
     if (!socket || !quill) return;
-    socket.emit("join-room", { docId, userId: profile.googleId });
+    socket.emit("join-room", { docId, userId: profile.googleId, profile });
     socket.on("load-document", (document) => {
       quill.setContents(document);
       role === USER_ROLE_EDITOR || role === USER_ROLE_OWNER
@@ -109,7 +115,7 @@ const Editor = ({ docId, role }) => {
     });
   }, [socket, quill, docId, profile]);
 
-  //updates changes
+  //send changes
   useEffect(() => {
     if (!socket || !quill) return;
 
@@ -142,7 +148,7 @@ const Editor = ({ docId, role }) => {
       quill.off("text-change", handler);
       quill.off("selection-change", cursorHandler);
     };
-  }, [quill, socket]);
+  }, [quill, socket, profile]);
 
   //fetches changes
   useEffect(() => {
@@ -162,20 +168,27 @@ const Editor = ({ docId, role }) => {
       }
     };
 
+    const usersHandler = (users) => {
+      setCollab(users);
+    };
+
     socket.on("receive-changes", handler);
     socket.on("receive-cursor", cursorHandler);
+    socket.on("current-users", usersHandler);
 
     return () => {
       socket.off("receive-changes", handler);
       socket.off("receive-cursor", cursorHandler);
-      socket.emit("update-cursor", {
-        userId: profile.googleId,
-        range: null,
-      });
+      socket.off("current-users", usersHandler);
     };
-  }, [quill, socket]);
+  }, [quill, socket, profile]);
 
-  return <div className="editor" ref={editorRef}></div>;
+  return (
+    <>
+      <div className="editor" ref={editorRef}></div>
+      {collab && <Collaborators users={collab} />}
+    </>
+  );
 };
 
 export default Editor;

@@ -36,6 +36,7 @@ const TopBarStyle = (theme, showBackButton) => {
       overflow: "hidden",
       whiteSpace: "nowrap",
       maxWidth: 320,
+      cursor: "pointer",
       [theme.breakpoints.down("sm")]: {
         fontSize: 17,
         marginRight: 20,

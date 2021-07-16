@@ -14,8 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import InfoIcon from "@material-ui/icons/Info";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import PrintIcon from "@material-ui/icons/Print";
 import { UserContext } from "../../context/UserContext";
 import SuspenseWithLoader from "../suspense-with-loader";
 import goBack from "../../utils/go-back";
@@ -37,6 +37,7 @@ const NavBar = ({
   editName,
   deleteHandler,
   shareHandler,
+  infoHandler,
 }) => {
   const useStyles = makeStyles((theme) => TopBarStyle(theme, showBackButton));
   const [userAnchor, setUserAnchor] = useState(null);
@@ -55,10 +56,6 @@ const NavBar = ({
 
   const onBackClick = () => {
     goBack(history);
-  };
-
-  const handlePrintButtonClick = () => {
-    window.print();
   };
 
   return (
@@ -114,16 +111,12 @@ const NavBar = ({
                 )}
                 {role === USER_ROLE_VIEWER && <Chip label="Viewer's access" />}
                 {role === USER_ROLE_EDITOR && <Chip label="Editor's access" />}
-                {/* {(role === USER_ROLE_VIEWER || role === USER_ROLE_EDITOR) && (
-                  <Chip
-                    label="Owned by Prasoon Goswami"
-                    variant="outlined"
-                    style={{ marginLeft: 4 }}
-                  />
-                )} */}
-                <IconButton color="primary" onClick={handlePrintButtonClick}>
-                  <PrintIcon />
-                </IconButton>
+
+                <Tooltip title="Document info">
+                  <IconButton color="primary" onClick={infoHandler}>
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
               </>
             )}
             <Tooltip title={profile?.name ?? ""}>

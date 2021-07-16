@@ -41,6 +41,14 @@
 .editor .ql-clipboard {
   position: fixed !important;
 }
+.editor .ql-print {
+  height: auto !important;
+}
+.editor .ql-print::before {
+  content: "🖨︎";
+  font-size: 18px;
+}
+
 @media print {
   body {
     background: none;
