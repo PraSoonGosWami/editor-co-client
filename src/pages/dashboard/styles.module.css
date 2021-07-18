@@ -9,3 +9,10 @@
   bottom: 32px;
   right: 32px;
 }
+
+@media (max-width: 500px) {
+  .addFab {
+    bottom: 16px;
+    right: 16px;
+  }
+}

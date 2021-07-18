@@ -73,6 +73,9 @@
   .editor .ql-toolbar.ql-snow {
     display: none;
   }
+  .collaborator-fab {
+    display: none;
+  }
 }
 
 @page {

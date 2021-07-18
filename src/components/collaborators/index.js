@@ -29,7 +29,7 @@ const Collaborators = ({ users }) => {
     setAnchorEl(null);
   };
   return (
-    <div>
+    <div className="collaborator-fab">
       <Tooltip title="Current collaborators on the document">
         <Fab
           color="primary"
@@ -53,12 +53,12 @@ const Collaborators = ({ users }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: "top",
+          horizontal: "left",
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: "bottom",
+          horizontal: "right",
         }}
       >
         {users &&

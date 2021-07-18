@@ -106,14 +106,19 @@ const Editor = ({ docId, role }) => {
   //populating the editor with data
   useEffect(() => {
     if (!socket || !quill) return;
-    socket.emit("join-room", { docId, userId: profile.googleId, profile });
+    socket.emit("join-room", {
+      docId,
+      userId: profile.googleId,
+      name: profile?.name,
+      avatar: profile?.imageUrl,
+    });
     socket.on("load-document", (document) => {
       quill.setContents(document);
       role === USER_ROLE_EDITOR || role === USER_ROLE_OWNER
         ? quill.enable()
         : quill.disable();
     });
-  }, [socket, quill, docId, profile]);
+  }, [socket, quill, docId, profile, role]);
 
   //send changes
   useEffect(() => {
@@ -148,7 +153,7 @@ const Editor = ({ docId, role }) => {
       quill.off("text-change", handler);
       quill.off("selection-change", cursorHandler);
     };
-  }, [quill, socket, profile]);
+  }, [quill, socket, profile, role]);
 
   //fetches changes
   useEffect(() => {
