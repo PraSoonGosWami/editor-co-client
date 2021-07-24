@@ -9,6 +9,7 @@ import { UserContext } from "./context/UserContext";
 import PrivateRoute from "./utils/private-routes";
 import SuspenseWithLoader from "./components/suspense-with-loader";
 import { DocContextProvider } from "./context/DocumentContext";
+import ErrorChip from "./components/error-chip";
 
 const DashboardPage = lazy(() => import("./pages/dashboard"));
 const LandingPage = lazy(() => import("./pages/landing"));
@@ -73,6 +74,7 @@ const App = () => {
             </Switch>
           )}
         </SuspenseWithLoader>
+        <ErrorChip />
       </AlertProvider>
     </MuiThemeProvider>
   );

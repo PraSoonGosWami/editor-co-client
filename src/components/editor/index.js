@@ -4,11 +4,11 @@ import QuillCursors from "quill-cursors";
 import ImageResize from "quill-image-resize-module-react";
 import { io } from "socket.io-client";
 import { UserContext } from "../../context/UserContext";
+import getRandomColor from "../../utils/generate-color";
 import {
   USER_ROLE_EDITOR,
   USER_ROLE_OWNER,
   USER_ROLE_VIEWER,
-  USER_ROLE_UNDEFINDED,
   SERVER_URL,
 } from "../../constants";
 import Collaborators from "../collaborators";
@@ -49,7 +49,10 @@ const TOOLBAR_OPTIONS = [
   [{ color: [] }, { background: [] }],
   [{ script: "sub" }, { script: "super" }],
   [{ align: [] }],
-  ["image", "blockquote", "code-block"],
+  [{ indent: "-1" }, { indent: "+1" }],
+  [{ direction: "rtl" }],
+  ["blockquote", "code-block"],
+  ["image", "video"],
   ["clean"],
   ["print"],
 ];
@@ -59,7 +62,7 @@ const Editor = ({ docId, role }) => {
   const [quill, setQuill] = useState();
   const [cursors, setCursor] = useState(null);
   const [collab, setCollab] = useState(null);
-
+  const [cursorColor] = useState(getRandomColor());
   const { profile } = useContext(UserContext);
 
   const editorRef = useCallback((wrapper) => {
@@ -74,6 +77,9 @@ const Editor = ({ docId, role }) => {
         cursors: true,
         imageResize: {
           parchment: Quill.import("parchment"),
+        },
+        history: {
+          userOnly: true,
         },
       },
       scrollingContainer: "html",
@@ -120,32 +126,41 @@ const Editor = ({ docId, role }) => {
     });
   }, [socket, quill, docId, profile, role]);
 
+  //save changes
+  useEffect(() => {
+    if (socket == null || quill == null) return;
+
+    const interval = setInterval(() => {
+      socket.emit("save-document", {
+        data: quill.getContents(),
+        userId: profile.googleId,
+      });
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [socket, quill, profile]);
+
   //send changes
   useEffect(() => {
     if (!socket || !quill) return;
 
     const handler = (delta, oldData, source) => {
-      if (
-        source !== "user" ||
-        role === USER_ROLE_VIEWER ||
-        role === USER_ROLE_UNDEFINDED
-      )
-        return;
+      if (source !== "user" || !role || role === USER_ROLE_VIEWER) return;
       socket.emit("send-changes", delta);
-      socket.emit("save-document", {
-        data: quill.getContents(),
-        userId: profile.googleId,
-      });
     };
+
     const cursorHandler = (range, oldRange, source) => {
-      if (role === USER_ROLE_VIEWER || role === USER_ROLE_UNDEFINDED) return;
+      if (!role || role === USER_ROLE_VIEWER) return;
       socket.emit("update-cursor", {
         userId: profile?.googleId,
         userName: profile?.name,
         range,
-        color: "red",
+        color: cursorColor,
       });
     };
+
     quill.on("text-change", handler);
     quill.on("selection-change", cursorHandler);
 

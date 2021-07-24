@@ -45,8 +45,9 @@
   height: auto !important;
 }
 .editor .ql-print::before {
-  content: "🖨︎";
-  font-size: 18px;
+  content: "⎙";
+  font-weight: bold;
+  font-size: 16px;
 }
 
 @media print {
